@@ -1,0 +1,11 @@
+
+# Selects all activities that match the given category
+
+SELECT Act.name 
+FROM activity Act
+INNER JOIN category_activity_map Map 
+ON (Act.id = Map.activity_id)
+WHERE Map.category_id = 
+(
+    SELECT Cat.id FROM category Cat WHERE name='Food'
+);
