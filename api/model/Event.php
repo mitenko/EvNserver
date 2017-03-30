@@ -65,13 +65,13 @@ class Event {
      */
     public static function toReadablePriority($priority) {
         switch($priority) {
-            case 1 :
+            case 0 :
                 return self::ULTRA;
-            case 2 :
+            case 1 :
                 return self::HIGH;
-            case 3 :
+            case 2 :
                 return self::MED;
-            case 4 :
+            case 3 :
                 return self::LOW;
         }
         return '';

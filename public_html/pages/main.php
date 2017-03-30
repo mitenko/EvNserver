@@ -32,11 +32,8 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
                     </tr>
 
                     <tr ng-repeat="event in events">
-                        <td><a class="btn" style="width:100%;height:100%;" ng-class="
-                           {'btn-danger': (event.priority==1),
-                            'btn-warning': (event.priority==2),
-                            'btn-success': (event.priority==3),
-                            'btn-primary': (event.priority==4)}"" href>{{event.readablePriority}}</a></td>
+                        <td><a class="btn" style="width:100%;height:100%;"
+                               ng-class="getPriorityClass(event.priority);" href>{{event.readablePriority}}</a></td>
                         <td>{{event.readableStartTime}}</td>
                         <td>{{event.detail.name}}</td>
                         <td class='hideOverflow'>{{event.detail.shortDesc}}</td>
@@ -54,21 +51,67 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
 
         <!-- The Edit Event Form -->
         <div id="edit-event-panel" class="tab-pane fade" ng-controller="EditEvntCtrl">
+            <pre>Selected date is: <em>{{dt | date:'fullDate' }}</em></pre>
             <br>
             <div class="panel panel-default col-md-6 col-md-offset-3">
             <h3>Edit Event</h3>
                 <form>
-                    <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" class="form-control" id="name" ng-model='event.detail.name'>
+                    <div class="row">
+                        <span class="col-md-6 form-group">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control" id="name" ng-model='event.detail.name'>
+                        </span>
+
+                        <span class="col-md-6 form-group">
+                            <div class="dropdown">
+
+                                <label for="priority">Priority</label>
+                                <select class="form-control" id="priority"
+                                        ng-class="priorityCssClass"
+                                        ng-model='event.priority'
+                                        ng-change="updateClass()">
+                                        <option value="btn btn-default" selected="selected">Choose</option>
+                                        <option class="btn btn-default" ng-repeat="pd in priorityData"
+                                                value="{{pd.value}}">{{pd.text}}</option>
+                                </select>
+
+                            </div>
+                        </span>
                     </div>
+                    <div style="display:inline-block; min-height:290px;">
+                        <div uib-datepicker ng-model="dt" class="well well-sm" datepicker-options="options"></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="input-group">
+                                <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="dt" is-open="popup1.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats" />
+                                <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+                            </p>
+                        </div>
+
+                           <!-- <label for="startDate">Event Start</label>
+                            <input type="text" class="form-control" id="startDate"
+                                   uib-datepicker-popup="{{format}}" ng-model="dt"
+                                   datepicker-options="dateOptions" ng-required="true"
+                                   is-open="popup1.opened"/>
+                              <span class="form-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+                              </span>-->
+                        </span>
+
+                        <span class="col-md-6 form-group">&nbsp;</span>
+                    </div>
+
                     <div class="form-group">
                         <label for="shortDesc">Short Description</label>
-                        <textarea class="form-control" rows='2' id="shortDesc" ng-model='event.detail.shortDesc'>
+                        <textarea class="form-control" rows='2' id="shortDesc" ng-model='event.detail.shortDesc'></textarea>
                     </div>
                     <div class="form-group">
                         <label for="longDesc">Long Description</label>
-                        <textarea class="form-control" rows='5' id="longDesc" ng-model='event.detail.longDesc'>
+                        <textarea class="form-control" rows='5' id="longDesc" ng-model='event.detail.longDesc'></textarea>
                     </div>
                 </form>
                 <br>

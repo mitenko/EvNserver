@@ -6,19 +6,23 @@
  * Time: 8:07 PM
  */
 /**
- * CSS route
+ * CSS and Javascript routes
  */
 $app->get('/css/bootstrap', function ($request, $response, $args) {
     return $this->view->render($response, 'css/supernice.css', array());
-})->setName('cssBootstrap');
+});
 
 $app->get('/css/evn', function ($request, $response, $args) {
     return $this->view->render($response, 'css/evn.css', array());
-})->setName('cssEvn');
+});
 
 $app->get('/javascript/main.js', function ($request, $response, $args) {
     return $this->view->render($response, 'javascript/main.js', array());
-})->setName('mainjs');
+});
+
+$app->get('/javascript/ui-bootstrap.js', function ($request, $response, $args) {
+    return $this->view->render($response, 'javascript/ui-bootstrap-tpls-2.5.0.js', array());
+});
 
 /**
  * Route to the login page
