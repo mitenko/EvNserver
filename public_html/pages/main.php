@@ -51,58 +51,49 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
 
         <!-- The Edit Event Form -->
         <div id="edit-event-panel" class="tab-pane fade" ng-controller="EditEvntCtrl">
-            <pre>Selected date is: <em>{{dt | date:'fullDate' }}</em></pre>
+            <pre class="alert alert-info">Time is: {{startDate | date:'shortTime' }}</pre>
             <br>
-            <div class="panel panel-default col-md-6 col-md-offset-3">
-            <h3>Edit Event</h3>
+            <div class="panel panel-default col-md-6 col-md-offset-3"><br>
                 <form>
                     <div class="row">
-                        <span class="col-md-6 form-group">
+                        <span class="col-md-9 form-group">
                             <label for="name">Name</label>
-                            <input type="text" class="form-control" id="name" ng-model='event.detail.name'>
+                            <input type="text" class="form-control input-lg" id="name" ng-model='event.detail.name'>
                         </span>
 
-                        <span class="col-md-6 form-group">
+                        <span class="col-md-3 form-group">
                             <div class="dropdown">
-
                                 <label for="priority">Priority</label>
-                                <select class="form-control" id="priority"
+                                <select class="form-control input-lg" id="priority"
                                         ng-class="priorityCssClass"
                                         ng-model='event.priority'
                                         ng-change="updateClass()">
-                                        <option value="btn btn-default" selected="selected">Choose</option>
-                                        <option class="btn btn-default" ng-repeat="pd in priorityData"
+                                        <option value="btn btn-default form-control" selected="selected">Choose</option>
+                                        <option class="btn btn-default form-control" ng-repeat="pd in priorityData"
                                                 value="{{pd.value}}">{{pd.text}}</option>
                                 </select>
-
                             </div>
                         </span>
                     </div>
-                    <div style="display:inline-block; min-height:290px;">
-                        <div uib-datepicker ng-model="dt" class="well well-sm" datepicker-options="options"></div>
-                    </div>
 
                     <div class="row">
-                        <div class="col-md-6">
-                            <p class="input-group">
-                                <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="dt" is-open="popup1.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats" />
-                                <span class="input-group-btn">
-            <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
-          </span>
-                            </p>
+                        <div class="form-group col-md-6">
+                            <label for="startDate">Start Date</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="startDate"
+                                       uib-datepicker-popup ng-model="startDate" ng-change="startDateChange()"
+                                       ng-required="true" is-open="state.startCalOpen"/>
+                                <span class="input-group-addon" style="cursor: pointer;">
+                                    <i class="glyphicon glyphicon-calendar text-muted" ng-click="openStartCal();"></i>
+                                </span>
+                            </div>
                         </div>
 
-                           <!-- <label for="startDate">Event Start</label>
-                            <input type="text" class="form-control" id="startDate"
-                                   uib-datepicker-popup="{{format}}" ng-model="dt"
-                                   datepicker-options="dateOptions" ng-required="true"
-                                   is-open="popup1.opened"/>
-                              <span class="form-group-btn">
-                                <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
-                              </span>-->
-                        </span>
+                        <span class="col-md-6 form-group">
+                            <div uib-timepicker ng-model="startDate" ng-change="startTimeChange()"
+                                 hour-step="1" minute-step="5"></div>
 
-                        <span class="col-md-6 form-group">&nbsp;</span>
+                        </span>
                     </div>
 
                     <div class="form-group">

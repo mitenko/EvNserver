@@ -45,112 +45,41 @@ evnApp.controller('EvntTblCtrl', function EvntTblCtrl($scope, $http, $rootScope)
  * Edit Event Controller
  */
 evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
-        $scope, $http, $rootScope, priorityData) {
+        $scope, $http, $rootScope, $filter, priorityData) {
     /**
-     * Calendar Picker Configurations
+     * Calendar Picker
      */
-    $scope.today = function() {
-        $scope.dt = new Date();
-    };
-    $scope.today();
-
-    $scope.clear = function() {
-        $scope.dt = null;
+    /**
+     * Click event to open the start date calendar popup
+     */
+    $scope.openStartCal = function() {
+        $scope.state.startCalOpen = true;
     };
 
-    $scope.inlineOptions = {
-        customClass: getDayClass,
-        minDate: new Date(),
-        showWeeks: true
+    /**
+     * Called when the Start Date has changed
+     */
+    $scope.startDateChange = function() {
+        $scope.event.unixStartTime = new Date($scope.startDate).getTime()/1000;
     };
 
-    $scope.dateOptions = {
-        dateDisabled: disabled,
-        formatYear: 'yy',
-        maxDate: new Date(2020, 5, 22),
-        minDate: new Date(),
-        startingDay: 1
+    /**
+     * Called when the Start Time has changed
+     */
+    $scope.startTimeChange = function() {
+        $scope.event.unixStartTime = new Date($scope.startDate).getTime()/1000;
     };
 
-    // Disable weekend selection
-    function disabled(data) {
-        var date = data.date,
-            mode = data.mode;
-        return mode === 'day' && (date.getDay() === 0 || date.getDay() === 6);
-    }
-
-    $scope.toggleMin = function() {
-        $scope.inlineOptions.minDate = $scope.inlineOptions.minDate ? null : new Date();
-        $scope.dateOptions.minDate = $scope.inlineOptions.minDate;
+    $scope.state = {
+        startCalOpen: false
     };
-
-    $scope.toggleMin();
-
-    $scope.open1 = function() {
-        console.log('open1 click');
-        $scope.popup1.opened = true;
-    };
-
-    $scope.open2 = function() {
-        $scope.popup2.opened = true;
-    };
-
-    $scope.setDate = function(year, month, day) {
-        $scope.dt = new Date(year, month, day);
-    };
-
-    $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
-    $scope.format = $scope.formats[0];
-    $scope.altInputFormats = ['M!/d!/yyyy'];
-
-    $scope.popup1 = {
-        opened: true
-    };
-
-    $scope.popup2 = {
-        opened: false
-    };
-
-    var tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    var afterTomorrow = new Date();
-    afterTomorrow.setDate(tomorrow.getDate() + 1);
-    $scope.events = [
-        {
-            date: tomorrow,
-            status: 'full'
-        },
-        {
-            date: afterTomorrow,
-            status: 'partially'
-        }
-    ];
-
-    function getDayClass(data) {
-        var date = data.date,
-            mode = data.mode;
-        if (mode === 'day') {
-            var dayToCheck = new Date(date).setHours(0,0,0,0);
-
-            for (var i = 0; i < $scope.events.length; i++) {
-                var currentDay = new Date($scope.events[i].date).setHours(0,0,0,0);
-
-                if (dayToCheck === currentDay) {
-                    return $scope.events[i].status;
-                }
-            }
-        }
-
-        return '';
-    }
-
-    console.log($scope.popup1.opened);
 
     $scope.priorityData = priorityData;
     $scope.priorityCssClass = 'btn btn-primary';
 
     $scope.$on('eventSelect', function(event, selectedEvent) {
         $scope.event = selectedEvent;
+        $scope.startDate = selectedEvent.unixStartTime * 1000;
         $scope.priorityCssClass = $rootScope.getPriorityClass(selectedEvent.priority);
     });
 
