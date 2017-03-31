@@ -51,7 +51,7 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
 
         <!-- The Edit Event Form -->
         <div id="edit-event-panel" class="tab-pane fade" ng-controller="EditEvntCtrl">
-            <pre class="alert alert-info">Time is: {{startDate | date:'shortTime' }}</pre>
+            <pre class="alert alert-info">{{event.detail.imageURL}}</pre>
             <br>
             <div class="panel panel-default col-md-6 col-md-offset-3"><br>
                 <form>
@@ -67,15 +67,40 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
                                 <select class="form-control input-lg" id="priority"
                                         ng-class="priorityCssClass"
                                         ng-model='event.priority'
-                                        ng-change="updateClass()">
-                                        <option value="btn btn-default form-control" selected="selected">Choose</option>
-                                        <option class="btn btn-default form-control" ng-repeat="pd in priorityData"
-                                                value="{{pd.value}}">{{pd.text}}</option>
+                                        ng-change="updateClass()"
+                                        ng-options="pd.value as pd.text for pd in priorityData">
                                 </select>
                             </div>
                         </span>
                     </div>
 
+                    <!-- Image Upload -->
+                    <div class="form-group">
+                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                            <div class="fileinput-preview thumbnail" data-trigger="fileinput">
+                                <img src="{{event.detail.imageURL}}" alt="..."></div>
+                            <div class="text-center">
+                                <span class="btn btn-primary btn-file">
+                                    <span class="fileinput-new">Upload Image</span>
+                                    <span class="fileinput-exists">Change</span><input type="file" name="..."></span>
+                                <a href="#" class="btn btn-danger fileinput-exists" data-dismiss="fileinput">Remove</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Short Description -->
+                    <div class="form-group">
+                        <label for="shortDesc">Short Description</label>
+                        <textarea class="form-control" rows='2' id="shortDesc" ng-model='event.detail.shortDesc'></textarea>
+                    </div>
+
+                    <!-- Long Description -->
+                    <div class="form-group">
+                        <label for="longDesc">Long Description</label>
+                        <textarea class="form-control" rows='5' id="longDesc" ng-model='event.detail.longDesc'></textarea>
+                    </div>
+
+                    <!-- Calendar Start Date -->
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label for="startDate">Start Date</label>
@@ -96,21 +121,16 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
                         </span>
                     </div>
 
-                    <div class="form-group">
-                        <label for="shortDesc">Short Description</label>
-                        <textarea class="form-control" rows='2' id="shortDesc" ng-model='event.detail.shortDesc'></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="longDesc">Long Description</label>
-                        <textarea class="form-control" rows='5' id="longDesc" ng-model='event.detail.longDesc'></textarea>
+                    <!-- Save and Cancel Buttons -->
+                    <div class="form-group text-center">
+                        <a class="btn btn-success" data-toggle="tab" href="#events-panel">
+                            <span class="glyphicon glyphicon-cloud-upload"></span> Save</a>
+                        &nbsp;
+                        <a class="btn btn-danger" data-toggle="tab" href="#events-panel">
+                            <span class="glyphicon glyphicon-remove"></span> Cancel</a>
                     </div>
                 </form>
                 <br>
-            <a class="btn btn-success" data-toggle="tab" href="#events-panel">
-                <span class="glyphicon glyphicon-cloud-upload"></span> Save</a>
-            &nbsp;
-            <a class="btn btn-danger" data-toggle="tab" href="#events-panel">
-                <span class="glyphicon glyphicon-remove"></span> Cancel</a>
             </div>
         </div>
 
