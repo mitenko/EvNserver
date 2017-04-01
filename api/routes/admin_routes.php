@@ -47,6 +47,18 @@ $app->get('/adminApi/getEvents', function ($request, $response, $args) {
         $event->priority = intval($row['priority']);
         $event->readablePriority = \Evn\model\Event::toReadablePriority($event->priority);
 
+        // Map the destinations for this event
+        $eventQuery = 'SELECT `map`.`destination_id` as `destination_id` '
+            . 'FROM `event_destination_map` as `map` '
+            . 'WHERE `map`.`event_id`='.$event->id;
+        $eventStmt = $db->prepare($eventQuery);
+        $eventStmt->execute();
+        $destIds = array();
+        while (($eventRow = $eventStmt->fetch(PDO::FETCH_ASSOC)) !== false) {
+            $destIds[] = intval($eventRow['destination_id']);
+        }
+        $event->destinations = $destIds;
+
         $data[] = $event;
     }
 

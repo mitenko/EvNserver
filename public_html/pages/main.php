@@ -121,6 +121,34 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
                         </span>
                     </div>
 
+                    <!-- Calendar End Date -->
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="endDate">End Date</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="startDate"
+                                       uib-datepicker-popup ng-model="endDate" ng-change="endDateChange()"
+                                       ng-required="true" is-open="state.endCalOpen"/>
+                                <span class="input-group-addon" style="cursor: pointer;">
+                                    <i class="glyphicon glyphicon-calendar text-muted" ng-click="openEndCal();"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <span class="col-md-6 form-group">
+                            <div uib-timepicker ng-model="startDate" ng-change="startTimeChange()"
+                                 hour-step="1" minute-step="5"></div>
+
+                        </span>
+                    </div>
+
+                    <!-- Destination Section -->
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="endDate">Destinations</label>
+                        </div>
+                    </div>
+
                     <!-- Save and Cancel Buttons -->
                     <div class="form-group text-center">
                         <a class="btn btn-success" data-toggle="tab" href="#events-panel">

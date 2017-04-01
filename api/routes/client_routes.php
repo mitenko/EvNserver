@@ -80,8 +80,18 @@ $app->get('/api/getEvents', function ($request, $response, $args) {
         $event->readableStartTime = date(DATETIME_FORMAT, intval($row['start_time']));
         $event->unixEndTime = intval($row['end_time']);
         $event->readableEndTime = date(DATETIME_FORMAT, intval($row['end_time']));
-        $event->unixDateAdded = intval($row['date_added']);
-        $event->readableDateAdded = date(DATE_FORMAT, intval($row['date_added']));
+
+        // Map the destinations for this event
+        $eventQuery = 'SELECT `map`.`destination_id` as `destination_id` '
+            . 'FROM `event_destination_map` as `map` '
+            . 'WHERE `map`.`event_id`='.$event->id;
+        $eventStmt = $db->prepare($eventQuery);
+        $eventStmt->execute();
+        $destIds = array();
+        while (($eventRow = $eventStmt->fetch(PDO::FETCH_ASSOC)) !== false) {
+            $destIds[] = intval($eventRow['destination_id']);
+        }
+        $event->destinations = $destIds;
 
         $data[] = $event;
     }

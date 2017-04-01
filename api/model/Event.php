@@ -46,11 +46,6 @@ class Event {
     public $unixDateAdded;
 
     /**
-     * Date Added
-     */
-    public $readableDateAdded;
-
-    /**
      * Priority
      */
     public $priority;
@@ -59,6 +54,11 @@ class Event {
      * Priority
      */
     public $readablePriority;
+
+    /**
+     * Array of SimpleDestinations attached to this Event
+     */
+    public $destinations;
 
     /**
      * Will return a readable version of the priority value

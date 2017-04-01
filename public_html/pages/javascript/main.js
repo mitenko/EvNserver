@@ -55,12 +55,18 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
     $scope.openStartCal = function() {
         $scope.state.startCalOpen = true;
     };
+    $scope.openEndCal = function() {
+        $scope.state.endCalOpen = true;
+    };
 
     /**
      * Called when the Start Date has changed
      */
     $scope.startDateChange = function() {
         $scope.event.unixStartTime = new Date($scope.startDate).getTime()/1000;
+    };
+    $scope.endDateChange = function() {
+        $scope.event.unixEndTime = new Date($scope.endDate).getTime()/1000;
     };
 
     /**
@@ -69,20 +75,31 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
     $scope.startTimeChange = function() {
         $scope.event.unixStartTime = new Date($scope.startDate).getTime()/1000;
     };
+    $scope.endTimeChange = function() {
+        $scope.event.unixEndTime = new Date($scope.endDate).getTime()/1000;
+    };
 
     $scope.state = {
-        startCalOpen: false
+        startCalOpen: false,
+        endCalOpen: false
     };
 
     $scope.priorityData = priorityData;
     $scope.priorityCssClass = 'btn btn-primary';
 
+    /**
+     * Called when the Event is set
+     */
     $scope.$on('eventSelect', function(event, selectedEvent) {
         $scope.event = selectedEvent;
         $scope.startDate = selectedEvent.unixStartTime * 1000;
+        $scope.endDate = selectedEvent.unixEndTime * 1000;
         $scope.priorityCssClass = $rootScope.getPriorityClass(selectedEvent.priority);
     });
 
+    /**
+     * Called to update the priority display class
+     */
     $scope.updateClass = function() {
         $scope.priorityCssClass = $rootScope.getPriorityClass($scope.event.priority);
     };
