@@ -143,12 +143,13 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
                     </div>
 
                     <!-- Destination Section -->
+                    <hr>
                     <div class="form-group">
                         <label for="destination" class="col-md-12">Destinations
                             <a class="btn btn-success pull-right" data-toggle="modal" data-target="#destinationSelect">
-                                <span class="glyphicon glyphicon-plus"></span> Add Destination</a>
+                                Add Destination</a>
                         </label>
-                        <div id="destinations">
+                        <div id="destinations" class="btn-toolbar">
                             <a class="btn btn-primary" ng-repeat="id in event.destinations">
                                 {{getDestinationName(id)}}
                                 <span class="glyphicon glyphicon-remove" ng-click="removeDestFromEvent(id);"></span></a>
@@ -177,12 +178,53 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
                         </div>
                     </div>
 
+                    <!-- Activity Section -->
+                    <hr>
+                    <div class="form-group">
+                        <label for="activities" class="col-md-12">Activities
+                            <a class="btn btn-success pull-right" data-toggle="modal" data-target="#activitySelect">Add Activity</a>
+                        </label>
+                        <div id="activities" class="btn-toolbar">
+                            <a class="btn btn-primary" ng-repeat="activity in event.detail.activities">
+                                {{activity.category + '::' + activity.name}}
+                                <span class="glyphicon glyphicon-remove" ng-click="removeActivityFromEvent(activity.id);"></span></a>
+                        </div>
+                    </div>
+
+                    <!-- Activity Select Modal -->
+                    <div id="activitySelect" class="modal fade" role="dialog">
+                        <div class="modal-sm centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header form-group">
+                                    Select a Category and Activity
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="category">Category</label>
+                                        <select class="form-control" id="category" ng-change="catChange();"
+                                                ng-model="selectedCategory" ng-options="category.name for category in categories">
+                                        </select>
+                                        <label for="activity">Activity</label>
+                                        <select class="form-control" id="activity"
+                                              ng-model="selectedActivity" ng-options="activity.name for activity in selectedCategory.activities">
+                                        </select>
+                                </div></div>
+                                <div class="modal-footer btn-toolbar">
+                                    <a type="button" class="btn btn-success" ng-click="addActivityToEvent();">
+                                        <span class="glyphicon glyphicon-plus"></span> Add</a>
+                                    <a type="button" class="btn btn-primary" data-dismiss="modal">Done</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Save and Cancel Buttons -->
-                    <br><br><div class="form-group text-center">
+                    <hr>
+                    <br><div class="form-group text-center">
                         <a class="btn btn-success" data-toggle="tab" href="#events-panel">
                             <span class="glyphicon glyphicon-cloud-upload"></span> Save</a>
                         &nbsp;
-                        <a class="btn btn-danger" data-toggle="tab" href="#events-panel">
+                        <a class="btn btn-danger" data-toggle="tab" href="#events-panel" ng-click="onCancel();">
                             <span class="glyphicon glyphicon-remove"></span> Cancel</a>
                     </div>
                 </form>

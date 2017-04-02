@@ -77,3 +77,32 @@ $app->get('/adminApi/getDestinations', function ($request, $response, $args) {
             'query' => $query
         ));
 });
+
+/**
+ * Route to return the list of locations within a defined space
+ */
+$app->get('/adminApi/getCategoryData', function ($request, $response, $args) {
+    $db = new \Evn\classes\Database;
+
+    $query = 'SELECT `c`.`id`,`c`.`name` '
+        . ' FROM `category` as `c`';
+    $stmt = $db->prepare($query);
+    $stmt->execute();
+
+    $data = array();
+    while (($row = $stmt->fetch(\PDO::FETCH_ASSOC)) !== false) {
+        $categoryData = new \Evn\model\CategoryData();
+        $categoryData->id = intval($row['id']);
+        $categoryData->name = $row['name'];
+
+        $categoryData->activities = \Evn\util\ActivityMapUtil::mapToCategory($db, $categoryData->id);
+
+        $data[] = $categoryData;
+    }
+
+    return $response->withJson(
+        array(
+            'data' => $data,
+            'query' => $query
+        ));
+});

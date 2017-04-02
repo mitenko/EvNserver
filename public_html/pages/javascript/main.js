@@ -25,6 +25,7 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
      */
     $scope.destinations = [];
     $scope.events = [];
+    $scope.categories = [];
 
     /**
      * Root Vars
@@ -57,7 +58,6 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
      * @returns {string}
      */
     $scope.getDestinationName = function(id) {
-        console.log(id);
         for (var i=0; i < $scope.destinations.length; i++) {
             if ($scope.destinations[i].id == id) {
                 return $scope.destinations[i].detail.name;
@@ -77,6 +77,11 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
     $http.get('/adminApi/getDestinations')
         .then(function(response) {
             $scope.destinations = response.data.data;
+        });
+
+    $http.get('/adminApi/getCategoryData')
+        .then(function(response) {
+            $scope.categories = response.data.data;
         });
 });
 
@@ -110,6 +115,10 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
         endCalOpen: false
     };
 
+    $scope.selectedCategory = {};
+    $scope.selectedActivity = {
+        name: 'hello'
+    };
     $scope.priorityCssClass = 'btn btn-primary';
 
     /**
@@ -117,6 +126,7 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
      */
     $scope.$on('eventSelect', function(event, selectedEvent) {
         $scope.event = selectedEvent;
+        $scope.backupEvent = jQuery.extend({}, selectedEvent);
         $scope.startDate = selectedEvent.unixStartTime * 1000;
         $scope.endDate = selectedEvent.unixEndTime * 1000;
         $scope.priorityCssClass = $scope.$parent.getPriorityClass(selectedEvent.priority);
@@ -198,4 +208,48 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
         });
         return difference;
     };
+
+    /**
+     * Event Activity Methods
+     */
+    /**
+     * Removes the Destination
+     */
+    $scope.removeActivityFromEvent = function(id) {
+        var index = -1;
+        for(var i = 0; i < $scope.event.detail.activities.length; i++) {
+            if ($scope.event.detail.activities[i].id == id) {
+                index = i;
+                break;
+            }
+        }
+        if (index > -1) {
+            $scope.event.detail.activities.splice(index,1);
+        }
+    };
+
+    /**
+     * Adds an Activity
+     */
+    $scope.addActivityToEvent = function() {
+        var selectedId = $scope.selectedActivity.id;
+        var index = -1;
+        for(var i = 0; i < $scope.event.detail.activities.length; i++) {
+            if ($scope.event.detail.activities[i].id == selectedId) {
+                index = i;
+                break;
+            }
+        }
+        if (index == -1) {
+            $scope.event.detail.activities.push($scope.selectedActivity);
+        }
+    };
+
+    /**
+     * Button Events
+     */
+    $scope.onCancel = function() {
+        $scope.event = $scope.backupEvent;
+    }
+
 });
