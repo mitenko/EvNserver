@@ -126,7 +126,7 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
                         <div class="form-group col-md-6">
                             <label for="endDate">End Date</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" id="startDate"
+                                <input type="text" class="form-control" id="endDate"
                                        uib-datepicker-popup ng-model="endDate" ng-change="endDateChange()"
                                        ng-required="true" is-open="state.endCalOpen"/>
                                 <span class="input-group-addon" style="cursor: pointer;">
@@ -143,14 +143,42 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
                     </div>
 
                     <!-- Destination Section -->
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label for="endDate">Destinations</label>
+                    <div class="form-group">
+                        <label for="destination" class="col-md-12">Destinations
+                            <a class="btn btn-success pull-right" data-toggle="modal" data-target="#destinationSelect">
+                                <span class="glyphicon glyphicon-plus"></span> Add Destination</a>
+                        </label>
+                        <div id="destinations">
+                            <a class="btn btn-primary" ng-repeat="id in event.destinations">
+                                {{getDestinationName(id)}}
+                                <span class="glyphicon glyphicon-remove" ng-click="removeDestFromEvent(id);"></span></a>
+                        </div>
+                    </div>
+
+                    <!-- Destination Select Modal -->
+                    <div id="destinationSelect" class="modal fade" role="dialog">
+                        <div class="modal-sm centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    Select a Destination
+                                </div>
+                                <div class="modal-body">
+                                    <a class="btn btn-success"
+                                       ng-repeat='destination in destinations | notInArray:event.destinations:"id"'
+                                       ng-click="addDestToEvent(destination.id);">
+                                        {{getDestinationName(destination.id)}}
+                                        <span class="glyphicon glyphicon-plus"
+                                              data-toggle="modal" data-target="#destinationSelect"></span></a><br>
+                                </div>
+                                <div class="modal-footer">
+                                    <a type="button" class="btn btn-primary" data-dismiss="modal">Close</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Save and Cancel Buttons -->
-                    <div class="form-group text-center">
+                    <br><br><div class="form-group text-center">
                         <a class="btn btn-success" data-toggle="tab" href="#events-panel">
                             <span class="glyphicon glyphicon-cloud-upload"></span> Save</a>
                         &nbsp;
