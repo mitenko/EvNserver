@@ -4,22 +4,25 @@
 var evnApp = angular.module('evnApp', ['ngResource','ui.bootstrap']);
 
 /**
- * Global Vars
+ * Event Table Controller
  */
-var priorityData = new Array();
-priorityData[0] = {value:0, text:'Ultra', cssClass:'btn btn-danger'}
-priorityData[1] = {value:1, text:'High', cssClass:'btn btn-warning'}
-priorityData[2] = {value:2, text:'Medium', cssClass:'btn btn-success'}
-priorityData[3] = {value:3, text:'Low', cssClass:'btn btn-primary'}
-evnApp.constant('priorityData', priorityData);
+evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
+    /**
+     * Root Vars
+     */
+    var priorityData = new Array();
+    priorityData[0] = {value:0, text:'Ultra', cssClass:'btn btn-danger'}
+    priorityData[1] = {value:1, text:'High', cssClass:'btn btn-warning'}
+    priorityData[2] = {value:2, text:'Medium', cssClass:'btn btn-success'}
+    priorityData[3] = {value:3, text:'Low', cssClass:'btn btn-primary'}
+    $scope.priorityData = priorityData;
 
-/**
- * Global Functions
- */
-evnApp.run(function($rootScope) {
-    $rootScope.getPriorityClass = function ($eventPriority) {
-        if (priorityData.length > $eventPriority && $eventPriority >= 0) {
-            return priorityData[$eventPriority].cssClass;
+    /**
+     * Root Functions
+     */
+    $scope.getPriorityClass = function ($eventPriority) {
+        if ($scope.priorityData.length > $eventPriority && $eventPriority >= 0) {
+            return $scope.priorityData[$eventPriority].cssClass;
         }
         return '';
     }
@@ -28,7 +31,7 @@ evnApp.run(function($rootScope) {
 /**
  * Event Table Controller
  */
-evnApp.controller('EvntTblCtrl', function EvntTblCtrl($scope, $http, $rootScope) {
+evnApp.controller('EvntTblCtrl', function EvntTblCtrl($scope, $http) {
     $scope.events = [];
 
     $http.get('/adminApi/getEvents')
@@ -37,7 +40,7 @@ evnApp.controller('EvntTblCtrl', function EvntTblCtrl($scope, $http, $rootScope)
     });
 
     $scope.editEvent = function(event) {
-        $rootScope.$broadcast('eventSelect', event);
+        $scope.$parent.$broadcast('eventSelect', event);
         // Make the Events tab active for return navigation
         $(".nav-tabs").find("li").removeClass("active");
     };
@@ -47,7 +50,7 @@ evnApp.controller('EvntTblCtrl', function EvntTblCtrl($scope, $http, $rootScope)
  * Edit Event Controller
  */
 evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
-        $scope, $http, $rootScope, $filter, priorityData) {
+        $scope, $http, $filter) {
     /**
      * Calendar Picker
      */
@@ -86,23 +89,23 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
         endCalOpen: false
     };
 
-    $scope.priorityData = priorityData;
     $scope.priorityCssClass = 'btn btn-primary';
 
     /**
      * Called when the Event is set
      */
     $scope.$on('eventSelect', function(event, selectedEvent) {
+        console.log('Event Select Event');
         $scope.event = selectedEvent;
         $scope.startDate = selectedEvent.unixStartTime * 1000;
         $scope.endDate = selectedEvent.unixEndTime * 1000;
-        $scope.priorityCssClass = $rootScope.getPriorityClass(selectedEvent.priority);
+        $scope.priorityCssClass = $scope.$parent.getPriorityClass(selectedEvent.priority);
     });
 
     /**
      * Called to update the priority display class
      */
     $scope.updateClass = function() {
-        $scope.priorityCssClass = $rootScope.getPriorityClass($scope.event.priority);
+        $scope.priorityCssClass = $scope.$parent.getPriorityClass($scope.event.priority);
     };
 });

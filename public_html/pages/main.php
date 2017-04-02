@@ -17,7 +17,7 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
         <li><a href="#destination-panel" data-toggle="tab" class="h3" >Destinations</a></li>
     </ul>
 
-    <div class="tab-content">
+    <div class="tab-content" ng-controller="RootCtrl">
 
         <!-- The Event Table -->
         <div id="events-panel" class="tab-pane fade in active" ng-controller="EvntTblCtrl">
