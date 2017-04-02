@@ -1,0 +1,1 @@
+[02-Apr-2017 13:50:58 America/Moncton] PHP Fatal error:  Class 'Evn\model\PDO' not found in /home/eventsna/api/model/Event.php on line 81

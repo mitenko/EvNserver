@@ -23,41 +23,11 @@ $app->get('/adminApi/getEvents', function ($request, $response, $args) {
     $data = array();
     while (($row = $stmt->fetch(PDO::FETCH_ASSOC)) !== false) {
         // Build the detail instance
-        $detail = new \Evn\model\Detail();
-        $detail->id = intval($row['id']);
-        $detail->name = $row['name'];
-        $detail->shortDesc = $row['short_desc'];
-        $detail->longDesc = $row['long_desc'];
-        $detail->thumbURL = $row['thumb_url'];
-        $detail->imageURL = $row['image_url'];
-        $detail->phone = $row['phone'];
-
+        $detail = new \Evn\model\Detail($row);
         $detail->activities = \Evn\util\ActivityMapUtil::mapToDetail($db, $detail->id, $categories, $activities);
 
         // Build the event instance
-        $event = new \Evn\model\Event();
-        $event->detail = $detail;
-        $event->id = intval($row['event_id']);
-        $event->unixStartTime = intval($row['start_time']);
-        $event->readableStartTime = date(DATETIME_FORMAT, intval($row['start_time']));
-        $event->unixEndTime = intval($row['end_time']);
-        $event->readableEndTime = date(DATETIME_FORMAT, intval($row['end_time']));
-        $event->unixDateAdded = intval($row['date_added']);
-        $event->readableDateAdded = date(DATE_FORMAT, intval($row['date_added']));
-        $event->priority = intval($row['priority']);
-        $event->readablePriority = \Evn\model\Event::toReadablePriority($event->priority);
-
-        // Map the destinations for this event
-        $eventQuery = 'SELECT `map`.`destination_id` as `destination_id` '
-            . 'FROM `event_destination_map` as `map` '
-            . 'WHERE `map`.`event_id`='.$event->id;
-        $eventStmt = $db->prepare($eventQuery);
-        $eventStmt->execute();
-        $destIds = array();
-        while (($eventRow = $eventStmt->fetch(PDO::FETCH_ASSOC)) !== false) {
-            $destIds[] = intval($eventRow['destination_id']);
-        }
-        $event->destinations = $destIds;
+        $event = new \Evn\model\Event($row, $detail, $db);
 
         $data[] = $event;
     }

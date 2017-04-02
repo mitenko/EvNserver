@@ -61,6 +61,32 @@ class Event {
     public $destinations;
 
     /**
+     * Will bind the given DB row
+     */
+    public function __construct($row, $detail, $db) {
+        $this->detail = $detail;
+        $this->id = intval($row['event_id']);
+        $this->unixStartTime = intval($row['start_time']);
+        $this->readableStartTime = date(DATETIME_FORMAT, intval($row['start_time']));
+        $this->unixEndTime = intval($row['end_time']);
+        $this->readableEndTime = date(DATETIME_FORMAT, intval($row['end_time']));
+        $this->priority = intval($row['priority']);
+        $this->readablePriority = \Evn\model\Event::toReadablePriority($event->priority);
+
+        // Map the destinations for this event
+        $eventQuery = 'SELECT `map`.`destination_id` as `destination_id` '
+            . 'FROM `event_destination_map` as `map` '
+            . 'WHERE `map`.`event_id`='.$this->id;
+        $eventStmt = $db->prepare($eventQuery);
+        $eventStmt->execute();
+        $destIds = array();
+        while (($eventRow = $eventStmt->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $destIds[] = intval($eventRow['destination_id']);
+        }
+        $this->destinations = $destIds;
+    }
+
+    /**
      * Will return a readable version of the priority value
      */
     public static function toReadablePriority($priority) {

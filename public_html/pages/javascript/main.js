@@ -26,19 +26,28 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
         }
         return '';
     }
+
+    /**
+     * HTTP calls
+     */
+    $scope.destinations = [];
+    $scope.events = [];
+
+    $http.get('/adminApi/getEvents')
+        .then(function(response) {
+            $scope.events = response.data.data;
+        });
+
+    $http.get('/adminApi/getDestinations')
+        .then(function(response) {
+            $scope.destinations = response.data.data;
+        });
 });
 
 /**
  * Event Table Controller
  */
 evnApp.controller('EvntTblCtrl', function EvntTblCtrl($scope, $http) {
-    $scope.events = [];
-
-    $http.get('/adminApi/getEvents')
-        .then(function(response) {
-            $scope.events = response.data.data;
-    });
-
     $scope.editEvent = function(event) {
         $scope.$parent.$broadcast('eventSelect', event);
         // Make the Events tab active for return navigation

@@ -44,5 +44,18 @@ class Detail {
      * Array of activity data types
      */
     public $activities;
+
+    /**
+	 * Will bind the given DB row
+	 */
+    public function __construct($row) {
+        $this->id = intval($row['id']);
+        $this->name = $row['name'];
+        $this->shortDesc = $row['short_desc'];
+        $this->longDesc = $row['long_desc'];
+        $this->thumbURL = $row['thumb_url'];
+        $this->imageURL = $row['image_url'];
+        $this->phone = $row['phone'];
+	}
 }
 ?>
