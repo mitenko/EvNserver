@@ -38,6 +38,8 @@ evnApp.controller('EvntTblCtrl', function EvntTblCtrl($scope, $http, $rootScope)
 
     $scope.editEvent = function(event) {
         $rootScope.$broadcast('eventSelect', event);
+        // Make the Events tab active for return navigation
+        $(".nav-tabs").find("li").removeClass("active");
     };
 });
 
