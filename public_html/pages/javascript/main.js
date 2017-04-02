@@ -41,6 +41,7 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
     $http.get('/adminApi/getDestinations')
         .then(function(response) {
             $scope.destinations = response.data.data;
+            console.log($scope.destinations);
         });
 });
 

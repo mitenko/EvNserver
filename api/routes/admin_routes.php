@@ -43,5 +43,37 @@ $app->get('/adminApi/getEvents', function ($request, $response, $args) {
  * Route to return the list of locations within a defined space
  */
 $app->get('/adminApi/getDestinations', function ($request, $response, $args) {
-    $response->withJson(array('this' => 'is', 'your' => 'response!'));
+    $db = new \Evn\classes\Database;
+    $params = $request->getQueryParams();
+    $categories = $request->getQueryParam('category');
+    $activities = $request->getQueryParam('activity');
+
+
+    $query = "SELECT "
+        . '`d`.id, `d`.name, `d`.short_desc, `d`.long_desc, `d`.thumb_url, `d`.image_url, `d`.phone, '
+        . '`dest`.`latitude`, `dest`.`longitude`, '
+        . '`a`.`address_line_one`, `a`.`address_line_two`, `a`.`postal_code`,`a`.`city` '
+        . 'FROM destination as `dest` '
+        . 'LEFT JOIN `detail` as `d` ON `dest`.`detail_id`=`d`.`id` '
+        . 'LEFT JOIN `address` as `a` ON `a`.`id`=`dest`.`address_id` ';
+
+    $stmt = $db->prepare($query);
+    $stmt->execute();
+
+    $data = array();
+    while (($row = $stmt->fetch(\PDO::FETCH_ASSOC)) !== false) {
+        // Build the destination's detail instance
+        $detail = new \Evn\model\Detail($row);
+        $detail->activities = \Evn\util\ActivityMapUtil::mapToDetail($db, $detail->id, $categories, $activities);
+
+        // Build the destination instance
+        $destination = new \Evn\model\Destination($row, $detail);
+        $data[] = $destination;
+    }
+
+    return $response->withJson(
+        array(
+            'data' => $data,
+            'query' => $query
+        ));
 });
