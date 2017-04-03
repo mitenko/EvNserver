@@ -51,7 +51,6 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
 
         <!-- The Edit Event Form -->
         <div id="edit-event-panel" class="tab-pane fade" ng-controller="EditEvntCtrl">
-            <pre class="alert alert-info">{{event.detail.imageURL}}</pre>
             <br>
             <div class="panel panel-default col-md-6 col-md-offset-3"><br>
                 <form>

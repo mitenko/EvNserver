@@ -130,5 +130,8 @@ $app->post('/adminApi/updateEvent', function ($request, $response, $args) {
     $stmt->bindParam(':eventId', $event['id'], \PDO::PARAM_INT);
     $stmt->execute();
 
-    return $response->getBody()->write("$query::".$event['priority']."::".$event['unixStartTime']."::".$event['unixEndTime']);
+    // Update the detail
+    \Evn\util\DBUtil::updateDetail($db, $event['detail']);
+
+    return $response;
 });
