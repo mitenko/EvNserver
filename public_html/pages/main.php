@@ -33,7 +33,7 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
 
                     <tr ng-repeat="event in events">
                         <td><a class="btn" style="width:100%;height:100%;"
-                               ng-class="getPriorityClass(event.priority);" href>{{event.readablePriority}}</a></td>
+                               ng-class="getPriorityClass(event.priority);" href>{{getPriorityName(event.priority);}}</a></td>
                         <td>{{event.readableStartTime}}</td>
                         <td>{{event.detail.name}}</td>
                         <td class='hideOverflow'>{{event.detail.shortDesc}}</td>
@@ -150,7 +150,7 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
                                 Add Destination</a>
                         </label>
                         <div id="destinations" class="btn-toolbar">
-                            <a class="btn btn-primary" ng-repeat="id in event.destinations">
+                            <a class="btn btn-primary flow-btn" ng-repeat="id in event.destinations">
                                 {{getDestinationName(id)}}
                                 <span class="glyphicon glyphicon-remove" ng-click="removeDestFromEvent(id);"></span></a>
                         </div>
@@ -185,7 +185,7 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
                             <a class="btn btn-success pull-right" data-toggle="modal" data-target="#activitySelect">Add Activity</a>
                         </label>
                         <div id="activities" class="btn-toolbar">
-                            <a class="btn btn-primary" ng-repeat="activity in event.detail.activities">
+                            <a class="btn btn-primary flow-btn" ng-repeat="activity in event.detail.activities">
                                 {{activity.category + '::' + activity.name}}
                                 <span class="glyphicon glyphicon-remove" ng-click="removeActivityFromEvent(activity.id);"></span></a>
                         </div>
@@ -221,7 +221,7 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
                     <!-- Save and Cancel Buttons -->
                     <hr>
                     <br><div class="form-group text-center">
-                        <a class="btn btn-success" data-toggle="tab" href="#events-panel">
+                        <a class="btn btn-success" data-toggle="tab" href="#events-panel" ng-click="onSave();">
                             <span class="glyphicon glyphicon-cloud-upload"></span> Save</a>
                         &nbsp;
                         <a class="btn btn-danger" data-toggle="tab" href="#events-panel" ng-click="onCancel();">

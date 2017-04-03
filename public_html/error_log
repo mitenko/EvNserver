@@ -1,1 +1,4 @@
-[02-Apr-2017 13:50:58 America/Moncton] PHP Fatal error:  Class 'Evn\model\PDO' not found in /home/eventsna/api/model/Event.php on line 81
+[02-Apr-2017 21:10:26 America/Moncton] PHP Notice:  Undefined variable: categories in /home/eventsna/api/routes/admin_routes.php on line 27
+[02-Apr-2017 21:10:26 America/Moncton] PHP Notice:  Undefined variable: activities in /home/eventsna/api/routes/admin_routes.php on line 27
+[02-Apr-2017 21:10:26 America/Moncton] PHP Notice:  Undefined variable: categories in /home/eventsna/api/routes/admin_routes.php on line 27
+[02-Apr-2017 21:10:26 America/Moncton] PHP Notice:  Undefined variable: activities in /home/eventsna/api/routes/admin_routes.php on line 27

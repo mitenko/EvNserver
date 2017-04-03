@@ -24,7 +24,7 @@ $app->get('/adminApi/getEvents', function ($request, $response, $args) {
     while (($row = $stmt->fetch(PDO::FETCH_ASSOC)) !== false) {
         // Build the detail instance
         $detail = new \Evn\model\Detail($row);
-        $detail->activities = \Evn\util\ActivityMapUtil::mapToDetail($db, $detail->id, $categories, $activities);
+        $detail->activities = \Evn\util\ActivityMapUtil::mapToDetail($db, $detail->id, [], []);
 
         // Build the event instance
         $event = new \Evn\model\Event($row, $detail, $db);
@@ -105,4 +105,30 @@ $app->get('/adminApi/getCategoryData', function ($request, $response, $args) {
             'data' => $data,
             'query' => $query
         ));
+});
+
+/**
+ * Event API Endpoints
+ */
+$app->post('/adminApi/updateEvent', function ($request, $response, $args) {
+    $db = new \Evn\classes\Database;
+
+    /**
+     * Update the Event
+     */
+    $event = $request->getParsedBody()['event'];
+
+    $query = 'UPDATE `event` as `ev` '
+        . 'SET `ev`.`priority`=:priority, `ev`.`start_time`=FROM_UNIXTIME(:starttime), `ev`.`end_time`=FROM_UNIXTIME(:endtime) '
+        . 'WHERE `ev`.`id`=:eventId';
+    $stmt = $db->prepare($query);
+
+    // Bind the Parameters
+    $stmt->bindParam(':priority', $event['priority'], \PDO::PARAM_INT);
+    $stmt->bindParam(':starttime', $event['unixStartTime'], \PDO::PARAM_INT);
+    $stmt->bindParam(':endtime', $event['unixEndTime'], \PDO::PARAM_INT);
+    $stmt->bindParam(':eventId', $event['id'], \PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $response->getBody()->write("$query::".$event['priority']."::".$event['unixStartTime']."::".$event['unixEndTime']);
 });

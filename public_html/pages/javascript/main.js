@@ -53,6 +53,18 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
     };
 
     /**
+     * Returns the css class for the event priority
+     * @param $eventPriority
+     * @returns {*}
+     */
+    $scope.getPriorityName = function ($eventPriority) {
+        if ($scope.priorityData.length > $eventPriority && $eventPriority >= 0) {
+            return $scope.priorityData[$eventPriority].text;
+        }
+        return '';
+    };
+
+    /**
      * Returns the destination name given the destination id
      * @param $id
      * @returns {string}
@@ -126,7 +138,7 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
      */
     $scope.$on('eventSelect', function(event, selectedEvent) {
         $scope.event = selectedEvent;
-        $scope.backupEvent = jQuery.extend({}, selectedEvent);
+        $scope.backupEvent = jQuery.extend(true, {}, selectedEvent);
         $scope.startDate = selectedEvent.unixStartTime * 1000;
         $scope.endDate = selectedEvent.unixEndTime * 1000;
         $scope.priorityCssClass = $scope.$parent.getPriorityClass(selectedEvent.priority);
@@ -248,8 +260,35 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
     /**
      * Button Events
      */
+    /**
+     * Restore with the backup
+     */
     $scope.onCancel = function() {
-        $scope.event = $scope.backupEvent;
+        // Find the event
+        index = -1;
+        for (var i = 0; i < $scope.$parent.events; i++) {
+            if ($scope.backupEvent.id == $scope.$parent.events[i].id) {
+                index = i;
+                break;
+            }
+        }
+        if (i > -1) {
+            $scope.event = $scope.backupEvent;
+            $scope.$parent.events[i] = $scope.backupEvent;
+        }
+    }
+
+    /**
+     * Send to the server!
+     */
+    $scope.onSave = function() {
+        var encodedEvent = angular.toJson({'event':$scope.event});
+        console.log("Sending " + encodedEvent);
+        $http.post('/adminApi/updateEvent', {'event': $scope.event})
+            .then(function(response) {
+                console.log(response);
+            });
+
     }
 
 });

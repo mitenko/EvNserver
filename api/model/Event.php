@@ -71,7 +71,7 @@ class Event {
         $this->unixEndTime = intval($row['end_time']);
         $this->readableEndTime = date(DATETIME_FORMAT, intval($row['end_time']));
         $this->priority = intval($row['priority']);
-        $this->readablePriority = \Evn\model\Event::toReadablePriority($event->priority);
+        $this->readablePriority = \Evn\model\Event::toReadablePriority($this->priority);
 
         // Map the destinations for this event
         $eventQuery = 'SELECT `map`.`destination_id` as `destination_id` '
