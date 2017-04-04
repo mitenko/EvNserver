@@ -29,7 +29,8 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
                         <th>Name <i class="btn pull-right glyphicon glyphicon-sort-by-alphabet"></i></th>
                         <th>Short Description <i class="btn pull-right glyphicon glyphicon-sort-by-alphabet"></i></th>
                         <th>&nbsp
-                            <a class="btn btn-success" href="#edit-event-panel" data-toggle="tab" ng-click="editEvent(event);">
+                            <a class="btn btn-success" href="#edit-event-panel"
+                               data-toggle="tab" ng-click="editEvent(buildEmptyEvent());">
                                 <span class="glyphicon glyphicon-plus"></span> Add Event</a></th>
                     </tr>
 
@@ -59,7 +60,8 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
                     <div class="row">
                         <span class="col-md-9 form-group">
                             <label for="name">Name</label>
-                            <input type="text" class="form-control input-lg" id="name" ng-model='event.detail.name'>
+                            <input type="text" class="form-control input-lg"
+                                   id="name" ng-model='event.detail.name' placeholder="Event Title">
                         </span>
 
                         <span class="col-md-3 form-group">
@@ -98,13 +100,15 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
                     <!-- Short Description -->
                     <div class="form-group">
                         <label for="shortDesc">Short Description</label>
-                        <textarea class="form-control" rows='2' id="shortDesc" ng-model='event.detail.shortDesc'></textarea>
+                        <textarea class="form-control" rows='3' id="shortDesc"
+                                  placeholder="A short summary of the event" ng-model='event.detail.shortDesc'></textarea>
                     </div>
 
                     <!-- Long Description -->
                     <div class="form-group">
                         <label for="longDesc">Long Description</label>
-                        <textarea class="form-control" rows='5' id="longDesc" ng-model='event.detail.longDesc'></textarea>
+                        <textarea class="form-control" rows='8' id="longDesc"
+                                  placeholder="A more detailed description of the event. No longer than three paragraphs." ng-model='event.detail.longDesc'></textarea>
                     </div>
 
                     <!-- Calendar Start Date -->
@@ -112,7 +116,7 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
                         <div class="form-group col-md-6">
                             <label for="startDate">Start Date</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" id="startDate"
+                                <input type="text" class="form-control" id="startDate" uib-datepicker-popup="{{dateFormat}}"
                                        uib-datepicker-popup ng-model="startDate" ng-change="startDateChange()"
                                        ng-required="true" is-open="state.startCalOpen"/>
                                 <span class="input-group-addon" style="cursor: pointer;">
@@ -133,7 +137,7 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
                         <div class="form-group col-md-6">
                             <label for="endDate">End Date</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" id="endDate"
+                                <input type="text" class="form-control" id="endDate" uib-datepicker-popup="{{dateFormat}}"
                                        uib-datepicker-popup ng-model="endDate" ng-change="endDateChange()"
                                        ng-required="true" is-open="state.endCalOpen"/>
                                 <span class="input-group-addon" style="cursor: pointer;">

@@ -17,7 +17,7 @@ evnApp.filter('notInArray', function($filter){
 });
 
 /**
- * Event Table Controller
+ * Root Controller
  */
 evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
     /**
@@ -27,9 +27,6 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
     $scope.events = [];
     $scope.categories = [];
 
-    /**
-     * Root Vars
-     */
     var priorityData = new Array();
     priorityData[0] = {value:0, text:'Ultra', cssClass:'btn btn-danger'}
     priorityData[1] = {value:1, text:'High', cssClass:'btn btn-warning'}
@@ -40,6 +37,45 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
     /**
      * Root Functions
      */
+    /**
+     * Returns an empty detail
+     * @returns {*}
+     */
+    $scope.buildEmptyDetail = function () {
+        var emptyDetail = {
+            id: '',
+            name: '',
+            shortDesc: '',
+            longDesc: '',
+            imageURL: '',
+            phone: '',
+            website: '',
+            price: '',
+            activities: [],
+        };
+        return emptyDetail;
+    };
+
+    /**
+     * Returns an empty event
+     * @param $eventPriority
+     * @returns {*}
+     */
+    $scope.buildEmptyEvent = function () {
+        var emptyDetail = $scope.buildEmptyDetail()
+        var emptyEvent = {
+            id: '',
+            detail: emptyDetail,
+            unixStartTime: Math.floor(Date.now() / 1000),
+            readableStartTime: '',
+            unixEndTime: Math.floor(Date.now() / 1000),
+            readableEndTime: '',
+            priority: 3,
+            destinations: []
+        };
+        return emptyEvent;
+    };
+
     /**
      * Returns the css class for the event priority
      * @param $eventPriority
@@ -148,12 +184,24 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
         endCalOpen: false,
         hasImage: false,
     };
+    $scope.dateFormat = 'dd-MMMM-yyyy';
 
     $scope.selectedCategory = {};
-    $scope.selectedActivity = {
-        name: 'hello'
-    };
+    $scope.selectedActivity = { };
     $scope.priorityCssClass = 'btn btn-primary';
+
+    /**
+     * Called when the Event is set
+     */
+    $scope.$on('eventSelect', function(event, selectedEvent) {
+        console.log(selectedEvent);
+        $scope.event = selectedEvent;
+        $scope.backupEvent = jQuery.extend(true, {}, selectedEvent);
+        $scope.startDate = selectedEvent.unixStartTime * 1000;
+        $scope.endDate = selectedEvent.unixEndTime * 1000;
+        $scope.priorityCssClass = $scope.$parent.getPriorityClass(selectedEvent.priority);
+        $scope.state.hasImage = ($scope.event.detail.imageURL);
+    });
 
     /**
      * Button Events
@@ -170,9 +218,9 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
                 break;
             }
         }
-        if (i > -1) {
+        if (index > -1) {
             $scope.event = $scope.backupEvent;
-            $scope.$parent.events[i] = $scope.backupEvent;
+            $scope.$parent.events[index] = $scope.backupEvent;
         }
     };
 
@@ -182,31 +230,25 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
     $scope.onSave = function() {
         var encodedEvent = angular.toJson({'event':$scope.event});
         var detailId = $scope.event.detail.id;
-        console.log("Sending " + encodedEvent);
-        $http.post('/adminApi/updateEvent',
-            {'event': $scope.event})
-            .then(function(response) {
-                // REturns the detail ID
-                // now post to /adminApi/updateImage
-                console.log(response);
-            });
 
-        if ($scope.uploadImage) {
-            $scope.$parent.uploadImageToServer(detailId, $scope.uploadImage);
+        // Update the event if we have a detailId
+        if (detailId) {
+            $http.post('/adminApi/updateEvent',
+                {'event': $scope.event});
+
+            if ($scope.uploadImage) {
+                $scope.$parent.uploadImageToServer(detailId, $scope.uploadImage);
+            }
+        } else {
+            // Add a new event
+            $http.post('/adminApi/addEvent',
+                {'event': $scope.event})
+            .then(function(response) {
+                console.log(response);
+                detailId = response.data.detailId;
+            });
         }
     };
-
-    /**
-     * Called when the Event is set
-     */
-    $scope.$on('eventSelect', function(event, selectedEvent) {
-        $scope.event = selectedEvent;
-        $scope.backupEvent = jQuery.extend(true, {}, selectedEvent);
-        $scope.startDate = selectedEvent.unixStartTime * 1000;
-        $scope.endDate = selectedEvent.unixEndTime * 1000;
-        $scope.priorityCssClass = $scope.$parent.getPriorityClass(selectedEvent.priority);
-        $scope.state.hasImage = ($scope.event.detail.imageURL);
-    });
 
     /**
      * Calendar Picker

@@ -41,6 +41,16 @@ class Detail {
     public $phone;
 
     /**
+     * The location / event's contact website URL
+     */
+    public $website;
+
+    /**
+     * The location / event's price
+     */
+    public $price;
+
+    /**
      * Array of activity data types
      */
     public $activities;
