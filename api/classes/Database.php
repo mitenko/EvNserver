@@ -55,5 +55,12 @@ class Database {
 	function fetch() {
 		$this->DBH->execute();
 	}
+
+	/**
+     * Returns the last insert Id
+     */
+	function getLastInsertId() {
+	    return $this->DBH->lastInsertId();
+    }
 }
 ?>

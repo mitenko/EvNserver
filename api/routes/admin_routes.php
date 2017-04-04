@@ -136,6 +136,43 @@ $app->post('/adminApi/updateEvent', function ($request, $response, $args) {
 });
 
 /**
+ * Adds a new event into the database
+ */
+$app->post('/adminApi/addEvent', function ($request, $response, $args) {
+    $db = new \Evn\classes\Database;
+    $event = $request->getParsedBody()['event'];
+
+    /**
+     * First insert the detail to get the detailId
+     */
+    $detailId = \Evn\util\DBUtil::addDetail($db, $event['detail']);
+
+    /**
+     * Now insert the Event
+     */
+    $query = 'INSERT INTO `event` '
+        . '(`detail_id`,`priority`,`start_time`,`end_time`) '
+        . ' VALUES (:detailId, :priority, FROM_UNIXTIME(:starttime), FROM_UNIXTIME(:endtime))';
+    $stmt = $db->prepare($query);
+
+    // Bind the Parameters
+    $stmt->bindParam(':detailId', $detailId, \PDO::PARAM_INT);
+    $stmt->bindParam(':priority', $event['priority'], \PDO::PARAM_INT);
+    $stmt->bindParam(':starttime', $event['unixStartTime'], \PDO::PARAM_INT);
+    $stmt->bindParam(':endtime', $event['unixEndTime'], \PDO::PARAM_INT);
+    $stmt->execute();
+
+    $eventId = $db->getLastInsertId();
+
+
+    return $response->withJson(
+        array(
+            'detailId' => $detailId,
+            'eventId' => $eventId,
+        ));
+});
+
+/**
  * Upload an Image
  */
 $app->post('/adminApi/updateImage', function ($request, $response, $args) {

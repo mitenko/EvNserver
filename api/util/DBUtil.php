@@ -35,6 +35,42 @@ class DBUtil {
         $stmt->bindParam(':phone', $detail['phone'], \PDO::PARAM_STR);
         $stmt->execute();
 
+        self::updateDetailActivityMap($db, $detail);
+    }
+
+    /**
+     * Takes an array of detail data and adds it to the detail table
+     * Returns the detailId
+     * @param $db
+     * @param $details
+     */
+    public static function addDetail($db, $detail) {
+        $query = 'INSERT INTO `detail` '
+            . '(`name`,`short_desc`,`long_desc`, `image_url`, `phone`) '
+            . 'VALUES (:name, :shortDesc, :longDesc, :imageURL, :phone)';
+        $stmt = $db->prepare($query);
+
+        // Bind the Parameters
+        $stmt->bindParam(':name', $detail['name'], \PDO::PARAM_STR);
+        $stmt->bindParam(':shortDesc', $detail['shortDesc'], \PDO::PARAM_STR);
+        $stmt->bindParam(':longDesc', $detail['longDesc'], \PDO::PARAM_STR);
+        $stmt->bindParam(':imageURL', $detail['imageURL'], \PDO::PARAM_STR);
+        $stmt->bindParam(':phone', $detail['phone'], \PDO::PARAM_STR);
+        $stmt->execute();
+
+        $detailId = $db->getLastInsertId();
+
+        self::updateDetailActivityMap($db, $detail);
+
+        return $detailId;
+    }
+
+    /**
+     * Updates the detail_activity_map
+     * @param $db
+     * @param $detail
+     */
+    public static function updateDetailActivityMap($db, $detail) {
         // Update the detail_activity_map
         $query = 'DELETE FROM detail_activity_map WHERE `detail_id`=:detailId';
         $stmt = $db->prepare($query);
@@ -51,5 +87,4 @@ class DBUtil {
             $stmt->execute();
         }
     }
-
 }

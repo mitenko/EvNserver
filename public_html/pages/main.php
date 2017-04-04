@@ -231,8 +231,8 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
 
                     <!-- Save and Cancel Buttons -->
                     <hr>
-                    <br><div class="form-group text-center">
-                        <a class="btn btn-success" data-toggle="tab" href="#events-panel" ng-click="onSave();">
+                    <br><div class="form-group text-center"><!--data-toggle="tab" href="#events-panel"-->
+                        <a class="btn btn-success" ng-click="onSave();">
                             <span class="glyphicon glyphicon-cloud-upload"></span> Save</a>
                         &nbsp;
                         <a class="btn btn-danger" data-toggle="tab" href="#events-panel" ng-click="onCancel();">

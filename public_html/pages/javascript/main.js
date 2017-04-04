@@ -194,7 +194,6 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
      * Called when the Event is set
      */
     $scope.$on('eventSelect', function(event, selectedEvent) {
-        console.log(selectedEvent);
         $scope.event = selectedEvent;
         $scope.backupEvent = jQuery.extend(true, {}, selectedEvent);
         $scope.startDate = selectedEvent.unixStartTime * 1000;
@@ -244,8 +243,14 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
             $http.post('/adminApi/addEvent',
                 {'event': $scope.event})
             .then(function(response) {
-                console.log(response);
                 detailId = response.data.detailId;
+                $scope.event.detail.id = detailId;
+                $scope.event.id = response.data.eventId;
+
+                // Don't upload the image until we have a detailId
+                if ($scope.uploadImage) {
+                    $scope.$parent.uploadImageToServer(detailId, $scope.uploadImage);
+                }
             });
         }
     };
