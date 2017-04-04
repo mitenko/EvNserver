@@ -28,7 +28,9 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
                         <th>Start Time<i class="btn pull-right glyphicon glyphicon-sort"></i></th>
                         <th>Name <i class="btn pull-right glyphicon glyphicon-sort-by-alphabet"></i></th>
                         <th>Short Description <i class="btn pull-right glyphicon glyphicon-sort-by-alphabet"></i></th>
-                        <th>&nbsp;</th>
+                        <th>&nbsp
+                            <a class="btn btn-success" href="#edit-event-panel" data-toggle="tab" ng-click="editEvent(event);">
+                                <span class="glyphicon glyphicon-plus"></span> Add Event</a></th>
                     </tr>
 
                     <tr ng-repeat="event in events">
@@ -141,7 +143,7 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
                         </div>
 
                         <span class="col-md-6 form-group">
-                            <div uib-timepicker ng-model="startDate" ng-change="startTimeChange()"
+                            <div uib-timepicker ng-model="endDate" ng-change="startTimeChange()"
                                  hour-step="1" minute-step="5"></div>
 
                         </span>

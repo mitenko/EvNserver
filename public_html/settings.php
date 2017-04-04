@@ -4,6 +4,7 @@
  */
 define ('__API__', __DIR__ . '/../api/');
 define ('__PAGES__', __DIR__ . '/pages/');
+define ('__IMGDIR__', __DIR__ . '/img/');
 define ('__SERVER_PAGES__', $_SERVER['SERVER_NAME'] . '/pages/');
 
 /**

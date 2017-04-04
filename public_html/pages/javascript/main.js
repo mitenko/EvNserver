@@ -79,6 +79,26 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
     };
 
     /**
+     * Uploads the image file for the given detail id
+     * @returns {string}
+     */
+    $scope.uploadImageToServer = function (id, imageData) {
+        var formData = new FormData();
+        console.log('detail:' + id);
+        formData.append('detailId', id);
+        formData.append('uploadImage', imageData);
+        $http.post('/adminApi/updateImage', formData, {
+            transformRequest: angular.identity,
+            headers: {'Content-Type': undefined}
+        }).then(function(response) {
+            // REturns the detail ID
+            // now post to /adminApi/updateImage
+            console.log(response);
+        });
+
+    };
+
+    /**
      * HTTP calls
      */
     $http.get('/adminApi/getEvents')
@@ -161,26 +181,19 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
      */
     $scope.onSave = function() {
         var encodedEvent = angular.toJson({'event':$scope.event});
+        var detailId = $scope.event.detail.id;
         console.log("Sending " + encodedEvent);
         $http.post('/adminApi/updateEvent',
-            {'event': $scope.event},
-            {
-                headers: {'Content-Type': undefined },
-                transformRequest: angular.identity
-            })
+            {'event': $scope.event})
             .then(function(response) {
-
                 // REturns the detail ID
                 // now post to /adminApi/updateImage
                 console.log(response);
             });
-    };
 
-    /**
-     * Upload the file on a separate call
-     */
-    $scope.uploadFile = function() {
-        console.log($scope.uploadImage);
+        if ($scope.uploadImage) {
+            $scope.$parent.uploadImageToServer(detailId, $scope.uploadImage);
+        }
     };
 
     /**

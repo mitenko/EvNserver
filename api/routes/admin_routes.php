@@ -112,7 +112,6 @@ $app->get('/adminApi/getCategoryData', function ($request, $response, $args) {
  */
 $app->post('/adminApi/updateEvent', function ($request, $response, $args) {
     $db = new \Evn\classes\Database;
-
     /**
      * Update the Event
      */
@@ -134,4 +133,61 @@ $app->post('/adminApi/updateEvent', function ($request, $response, $args) {
     \Evn\util\DBUtil::updateDetail($db, $event['detail']);
 
     return $response;
+});
+
+/**
+ * Upload an Image
+ */
+$app->post('/adminApi/updateImage', function ($request, $response, $args) {
+    $db = new \Evn\classes\Database;
+
+    $files = $request->getUploadedFiles();
+    $detailId = $request->getParsedBody()['detailId'];
+
+    if (empty($files['uploadImage']) || !$detailId) {
+        throw new Exception('Expected an uploaded image');
+    }
+
+    // Validate the detailId
+    $query = 'Select * from `detail` WHERE id=:detailId';
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':detailId', $detailId, \PDO::PARAM_INT);
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$row) {
+        throw new Exception('Invalid Detail Id');
+    }
+
+    // Move the new image
+    $newfile = $files['uploadImage'];
+    $pathParts = pathinfo($newfile->getClientFilename());
+    $newfileName = randomString(32) . "." . $pathParts['extension'];
+    $targetPath = __IMGDIR__  . $newfileName;
+    $newfile->moveTo($targetPath);
+
+    // Delete the old image
+    $query = 'SELECT `image_url` FROM `detail` WHERE `id`=:detailId';
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':detailId', $detailId, \PDO::PARAM_INT);
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($row['image_url']) {
+        $delFileParts = pathinfo($row['image_url']);
+        $delFile = __IMGDIR__ . $delFileParts['basename'];
+        unlink($delFile);
+    }
+
+    // Update detail row with the new detail image
+    $newURL =  'https://' . $_SERVER['SERVER_NAME'] . '/img/' . $newfileName;
+    $query = 'UPDATE `detail` SET `image_url`=:newURL WHERE `id`=:detailId';
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':detailId', $detailId, \PDO::PARAM_INT);
+    $stmt->bindParam(':newURL', $newURL, \PDO::PARAM_STR);
+    $stmt->execute();
+
+    return $response->withJson(
+        array(
+            'fileparts' => $delFileParts,
+            'delfile' => $delFile,
+        ));
 });

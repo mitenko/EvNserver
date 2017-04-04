@@ -1,0 +1,2 @@
+[04-Apr-2017 01:42:11 America/Moncton] PHP Notice:  Undefined variable: delFileParts in /home/eventsna/api/routes/admin_routes.php on line 190
+[04-Apr-2017 01:42:11 America/Moncton] PHP Notice:  Undefined variable: delFile in /home/eventsna/api/routes/admin_routes.php on line 191
