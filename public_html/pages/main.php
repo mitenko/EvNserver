@@ -75,13 +75,19 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
 
                     <!-- Image Upload -->
                     <div class="form-group">
-                        <div class="fileinput fileinput-new" data-provides="fileinput">
-                            <div class="fileinput-preview thumbnail" data-trigger="fileinput">
-                                <img src="{{event.detail.imageURL}}" alt="..."></div>
+                        <div class="fileinput " ng-class="state.hasImage? 'fileinput-exists' : 'fileinput-new'"
+                             data-provides="fileinput" ng-model="newImage">
+                            <div class="fileinput-preview fileinput-exists thumbnail" data-trigger="fileinput">
+                                <img src="{{event.detail.imageURL}}" alt="...">
+                            </div>
+                            <div class="fileinput-new thumbnail" data-trigger="fileinput">
+                                <img src="https://eventsnanaimo.com/img/placeholder.png" alt="..."></div>
                             <div class="text-center">
                                 <span class="btn btn-primary btn-file">
-                                    <span class="fileinput-new">Upload Image</span>
-                                    <span class="fileinput-exists">Change</span><input type="file" name="..."></span>
+                                    <span class="fileinput-new">Add Image</span>
+                                    <span class="fileinput-exists">Change</span>
+                                    <input type="file" name="file" file-model="uploadImage">
+                                </span>
                                 <a href="#" class="btn btn-danger fileinput-exists" data-dismiss="fileinput">Remove</a>
                             </div>
                         </div>

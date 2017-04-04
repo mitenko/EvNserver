@@ -1,7 +1,7 @@
 /**
  * Created by David on 2017-03-25.
  */
-var evnApp = angular.module('evnApp', ['ngResource','ui.bootstrap']);
+var evnApp = angular.module('evnApp', ['ngResource','ui.bootstrap','file-model']);
 
 /**
  * Custom Filter
@@ -118,13 +118,15 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
      */
     var defaultEvent = {
         detail: {
-            imageURL: 'https://eventsnanaimo.com/img/placeholder.png',
+            imageURL: '',
         }
     };
+    $scope.uploadImage = '';
     $scope.event = defaultEvent;
     $scope.state = {
         startCalOpen: false,
-        endCalOpen: false
+        endCalOpen: false,
+        hasImage: false,
     };
 
     $scope.selectedCategory = {};
@@ -132,6 +134,54 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
         name: 'hello'
     };
     $scope.priorityCssClass = 'btn btn-primary';
+
+    /**
+     * Button Events
+     */
+    /**
+     * Restore with the backup
+     */
+    $scope.onCancel = function() {
+        // Find the event
+        index = -1;
+        for (var i = 0; i < $scope.$parent.events; i++) {
+            if ($scope.backupEvent.id == $scope.$parent.events[i].id) {
+                index = i;
+                break;
+            }
+        }
+        if (i > -1) {
+            $scope.event = $scope.backupEvent;
+            $scope.$parent.events[i] = $scope.backupEvent;
+        }
+    };
+
+    /**
+     * Send to the server!
+     */
+    $scope.onSave = function() {
+        var encodedEvent = angular.toJson({'event':$scope.event});
+        console.log("Sending " + encodedEvent);
+        $http.post('/adminApi/updateEvent',
+            {'event': $scope.event},
+            {
+                headers: {'Content-Type': undefined },
+                transformRequest: angular.identity
+            })
+            .then(function(response) {
+
+                // REturns the detail ID
+                // now post to /adminApi/updateImage
+                console.log(response);
+            });
+    };
+
+    /**
+     * Upload the file on a separate call
+     */
+    $scope.uploadFile = function() {
+        console.log($scope.uploadImage);
+    };
 
     /**
      * Called when the Event is set
@@ -142,6 +192,7 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
         $scope.startDate = selectedEvent.unixStartTime * 1000;
         $scope.endDate = selectedEvent.unixEndTime * 1000;
         $scope.priorityCssClass = $scope.$parent.getPriorityClass(selectedEvent.priority);
+        $scope.state.hasImage = ($scope.event.detail.imageURL);
     });
 
     /**
@@ -256,39 +307,4 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
             $scope.event.detail.activities.push($scope.selectedActivity);
         }
     };
-
-    /**
-     * Button Events
-     */
-    /**
-     * Restore with the backup
-     */
-    $scope.onCancel = function() {
-        // Find the event
-        index = -1;
-        for (var i = 0; i < $scope.$parent.events; i++) {
-            if ($scope.backupEvent.id == $scope.$parent.events[i].id) {
-                index = i;
-                break;
-            }
-        }
-        if (i > -1) {
-            $scope.event = $scope.backupEvent;
-            $scope.$parent.events[i] = $scope.backupEvent;
-        }
-    }
-
-    /**
-     * Send to the server!
-     */
-    $scope.onSave = function() {
-        var encodedEvent = angular.toJson({'event':$scope.event});
-        console.log("Sending " + encodedEvent);
-        $http.post('/adminApi/updateEvent', {'event': $scope.event})
-            .then(function(response) {
-                console.log(response);
-            });
-
-    }
-
 });

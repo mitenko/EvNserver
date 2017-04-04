@@ -24,6 +24,10 @@ $app->get('/javascript/ui-bootstrap.js', function ($request, $response, $args) {
     return $this->view->render($response, 'javascript/ui-bootstrap-tpls-2.5.0.js', array());
 });
 
+$app->get('/javascript/angular-file-model.js', function ($request, $response, $args) {
+    return $this->view->render($response, 'javascript/angular-file-model.js', array());
+});
+
 /**
  * Route to the login page
  */
