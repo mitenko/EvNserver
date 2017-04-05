@@ -41,14 +41,38 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
                         <td>{{event.detail.name}}</td>
                         <td class='hideOverflow'>{{event.detail.shortDesc}}</td>
                         <td>
-                            <a href="#edit-event-panel" data-toggle="tab" ng-click="editEvent(event);">
-                                <i class="btn pull-left glyphicon glyphicon-pencil"></i>
-                            </a>
-                            <i class="btn pull-left glyphicon glyphicon-trash"></i>
+                            <span class="btn-toolbar">
+                                <a class="btn btn-primary" href="#edit-event-panel" data-toggle="tab" ng-click="editEvent(event);">
+                                    <i class="glyphicon glyphicon-pencil"></i>
+                                </a>
+                                <a class="btn btn-warning" data-toggle="modal"
+                                   data-target="#confirmDeleteEvent" ng-click="confirmDelete(event);">
+                                    <i class="glyphicon glyphicon-trash"></i>
+                                </a>
+                            </span>
                         </td>
                     </tr>
-
                 </table>
+
+                <!-- Confirm Delete Modal -->
+                <div id="confirmDeleteEvent" class="modal fade" role="dialog">
+                    <div class="modal-sm centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header form-group">
+                                Confirm Delete
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to delete the event <b>{{deleteEvent.detail.name}}</b>?
+                            </div>
+                            <div class="modal-footer btn-toolbar">
+                                <a type="button" class="btn btn-danger"
+                                   data-dismiss="modal" ng-click="onConfirmDeleteEvent(deleteEvent.id);">
+                                    <span class="glyphicon glyphicon-trash"></span> Delete</a>
+                                <a type="button" class="btn btn-warning" data-dismiss="modal">Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -231,8 +255,9 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
 
                     <!-- Save and Cancel Buttons -->
                     <hr>
-                    <br><div class="form-group text-center"><!--data-toggle="tab" href="#events-panel"-->
-                        <a class="btn btn-success" ng-click="onSave();">
+                    <br><div class="form-group text-center">
+                        <a class="btn btn-success" ng-click="onSave();"
+                           data-toggle="tab" href="#events-panel">
                             <span class="glyphicon glyphicon-cloud-upload"></span> Save</a>
                         &nbsp;
                         <a class="btn btn-danger" data-toggle="tab" href="#events-panel" ng-click="onCancel();">

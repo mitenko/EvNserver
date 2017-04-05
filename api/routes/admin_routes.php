@@ -136,6 +136,55 @@ $app->post('/adminApi/updateEvent', function ($request, $response, $args) {
 });
 
 /**
+ * Deletes an event and all associated data from the database
+ */
+$app->post('/adminApi/deleteEvent', function ($request, $response, $args) {
+    $db = new \Evn\classes\Database;
+    $eventId = $request->getParsedBody()['eventId'];
+
+    if (!$eventId) {
+        throw new Exception('Expected event data ' + print_r($request->getQueryParams(), true));
+    }
+
+    // Grab the detailId
+    $query = 'SELECT `detail_id` FROM `event` WHERE `id`=:eventId';
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':eventId', $eventId, \PDO::PARAM_INT);
+    $stmt->execute();
+    $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+    if (!$row) {
+        throw new Exception('Invalid Detail Id');
+    }
+    $detailId = $row['detail_id'];
+
+    // Delete from event
+    $query = 'DELETE FROM `event` WHERE `id`=:eventId';
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':eventId', $eventId, \PDO::PARAM_INT);
+    $stmt->execute();
+
+    // Delete from detail
+    $query = 'DELETE FROM `detail` WHERE `id`=:detailId';
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':detailId', $detailId, \PDO::PARAM_INT);
+    $stmt->execute();
+
+    // Delete from the event_destination_map
+    $query = 'DELETE FROM `event_destination_map` WHERE `event_id`=:eventId';
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':eventId', $eventId, \PDO::PARAM_INT);
+    $stmt->execute();
+
+    // Delete from the detail_activity_map
+    $query = 'DELETE FROM `detail_activity_map` WHERE `detail_id`=:detailId';
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':detailId', $detailId, \PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $response;
+});
+
+/**
  * Adds a new event into the database
  */
 $app->post('/adminApi/addEvent', function ($request, $response, $args) {

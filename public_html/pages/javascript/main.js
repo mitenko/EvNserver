@@ -28,10 +28,10 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
     $scope.categories = [];
 
     var priorityData = new Array();
-    priorityData[0] = {value:0, text:'Ultra', cssClass:'btn btn-danger'}
-    priorityData[1] = {value:1, text:'High', cssClass:'btn btn-warning'}
-    priorityData[2] = {value:2, text:'Medium', cssClass:'btn btn-success'}
-    priorityData[3] = {value:3, text:'Low', cssClass:'btn btn-primary'}
+    priorityData[0] = {value: 0, text: 'Ultra', cssClass: 'btn btn-danger'}
+    priorityData[1] = {value: 1, text: 'High', cssClass: 'btn btn-warning'}
+    priorityData[2] = {value: 2, text: 'Medium', cssClass: 'btn btn-success'}
+    priorityData[3] = {value: 3, text: 'Low', cssClass: 'btn btn-primary'}
     $scope.priorityData = priorityData;
 
     /**
@@ -105,8 +105,8 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
      * @param $id
      * @returns {string}
      */
-    $scope.getDestinationName = function(id) {
-        for (var i=0; i < $scope.destinations.length; i++) {
+    $scope.getDestinationName = function (id) {
+        for (var i = 0; i < $scope.destinations.length; i++) {
             if ($scope.destinations[i].id == id) {
                 return $scope.destinations[i].detail.name;
             }
@@ -126,7 +126,7 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
         $http.post('/adminApi/updateImage', formData, {
             transformRequest: angular.identity,
             headers: {'Content-Type': undefined}
-        }).then(function(response) {
+        }).then(function (response) {
             // REturns the detail ID
             // now post to /adminApi/updateImage
             console.log(response);
@@ -137,30 +137,68 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
     /**
      * HTTP calls
      */
-    $http.get('/adminApi/getEvents')
-        .then(function(response) {
-            $scope.events = response.data.data;
-        });
+    $scope.getEvents = function () {
+        $http.get('/adminApi/getEvents')
+            .then(function (response) {
+                $scope.events = response.data.data;
+            });
+    };
 
-    $http.get('/adminApi/getDestinations')
-        .then(function(response) {
-            $scope.destinations = response.data.data;
-        });
+    $scope.getDestinations = function () {
+        $http.get('/adminApi/getDestinations')
+            .then(function (response) {
+                $scope.destinations = response.data.data;
+            });
+    };
 
-    $http.get('/adminApi/getCategoryData')
-        .then(function(response) {
-            $scope.categories = response.data.data;
-        });
+    $scope.getCategoryData = function () {
+        $http.get('/adminApi/getCategoryData')
+            .then(function (response) {
+                $scope.categories = response.data.data;
+            });
+    };
+
+    $scope.getEvents();
+    $scope.getDestinations();
+    $scope.getCategoryData();
 });
 
 /**
  * Event Table Controller
  */
 evnApp.controller('EvntTblCtrl', function EvntTblCtrl($scope, $http) {
+    $scope.deleteEvent = $scope.$parent.buildEmptyEvent();
+
+    /**
+     * Opens up the Edit Event panel
+     * @param event
+     */
     $scope.editEvent = function(event) {
         $scope.$parent.$broadcast('eventSelect', event);
         // Make the Events tab active for return navigation
         $(".nav-tabs").find("li").removeClass("active");
+    };
+
+    /**
+     * Opens up the confirm delete modal
+     */
+    $scope.confirmDelete = function(event) {
+        $scope.deleteEvent = event;
+    };
+
+    /**
+     * Opens up the confirm delete modal
+     */
+    $scope.onConfirmDeleteEvent = function(eventId) {
+        console.log('Deleting ' + eventId);
+        $http.post('/adminApi/deleteEvent', {'eventId': eventId})
+            .then(function(response) {
+                console.log(response);
+                $scope.$parent.getEvents();
+            });
+
+        $http.post('/adminApi/updateEvent',
+            {'event': $scope.event});
     };
 });
 
@@ -172,13 +210,8 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
     /**
      * Initializations
      */
-    var defaultEvent = {
-        detail: {
-            imageURL: '',
-        }
-    };
     $scope.uploadImage = '';
-    $scope.event = defaultEvent;
+    $scope.event = $scope.$parent.buildEmptyEvent();
     $scope.state = {
         startCalOpen: false,
         endCalOpen: false,
@@ -247,6 +280,7 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
                 $scope.event.detail.id = detailId;
                 $scope.event.id = response.data.eventId;
 
+                $scope.$parent.getEvents();
                 // Don't upload the image until we have a detailId
                 if ($scope.uploadImage) {
                     $scope.$parent.uploadImageToServer(detailId, $scope.uploadImage);
