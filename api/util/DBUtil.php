@@ -87,4 +87,27 @@ class DBUtil {
             $stmt->execute();
         }
     }
+
+    /**
+     * Updates the detail_activity_map
+     * @param $db
+     * @param $detail
+     */
+    public static function updateEventDestinationMap($db, $event) {
+        // Update the detail_activity_map
+        $query = 'DELETE FROM event_destination_map WHERE `event_id`=:eventId';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':eventId', $event['id'], \PDO::PARAM_INT);
+        $stmt->execute();
+
+        foreach($event['destinations'] as $destinationId) {
+            $query = 'INSERT INTO event_destination_map '
+                . '(`event_id`, `destination_id`) VALUES '
+                . '(:eventId, :destinationId)';
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(':eventId', $event['id'], \PDO::PARAM_INT);
+            $stmt->bindParam(':destinationId', $destinationId, \PDO::PARAM_INT);
+            $stmt->execute();
+        }
+    }
 }

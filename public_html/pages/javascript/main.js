@@ -137,6 +137,9 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
     /**
      * HTTP calls
      */
+    /**
+     * Returns the list of events
+     */
     $scope.getEvents = function () {
         $http.get('/adminApi/getEvents')
             .then(function (response) {
@@ -144,6 +147,9 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
             });
     };
 
+    /**
+     * Sets the list of destinations
+     */
     $scope.getDestinations = function () {
         $http.get('/adminApi/getDestinations')
             .then(function (response) {
@@ -151,6 +157,9 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
             });
     };
 
+    /**
+     * Gets the category / activity data
+     */
     $scope.getCategoryData = function () {
         $http.get('/adminApi/getCategoryData')
             .then(function (response) {
@@ -260,6 +269,8 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
      * Send to the server!
      */
     $scope.onSave = function() {
+        console.log('Saving Event');
+        console.log($scope.event);
         var encodedEvent = angular.toJson({'event':$scope.event});
         var detailId = $scope.event.detail.id;
 

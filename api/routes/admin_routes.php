@@ -129,6 +129,9 @@ $app->post('/adminApi/updateEvent', function ($request, $response, $args) {
     $stmt->bindParam(':eventId', $event['id'], \PDO::PARAM_INT);
     $stmt->execute();
 
+    // Update the event destination map
+    \Evn\util\DBUtil::updateEventDestinationMap($db, $event);
+
     // Update the detail
     \Evn\util\DBUtil::updateDetail($db, $event['detail']);
 
@@ -163,6 +166,18 @@ $app->post('/adminApi/deleteEvent', function ($request, $response, $args) {
     $stmt->bindParam(':eventId', $eventId, \PDO::PARAM_INT);
     $stmt->execute();
 
+    // Delete the image
+    $query = 'SELECT `image_url` FROM `detail` WHERE `id`=:detailId';
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':detailId', $detailId, \PDO::PARAM_INT);
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($row['image_url']) {
+        $delFileParts = pathinfo($row['image_url']);
+        $delFile = __IMGDIR__ . $delFileParts['basename'];
+        unlink($delFile);
+    }
+
     // Delete from detail
     $query = 'DELETE FROM `detail` WHERE `id`=:detailId';
     $stmt = $db->prepare($query);
@@ -195,6 +210,9 @@ $app->post('/adminApi/addEvent', function ($request, $response, $args) {
      * First insert the detail to get the detailId
      */
     $detailId = \Evn\util\DBUtil::addDetail($db, $event['detail']);
+
+    // Update the event destination map
+    \Evn\util\DBUtil::updateEventDestinationMap($db, $event);
 
     /**
      * Now insert the Event
