@@ -6,8 +6,8 @@
  */
 $app->get('/adminApi/getEvents', function ($request, $response, $args) {
     $db = new \Evn\classes\Database;
-    $sorton = $request->getQueryParam('sorton');
-    $sortdir = $request->getQueryParam('sortdir');
+    $sortOn = $request->getQueryParam('sorton');
+    $sortDir = $request->getQueryParam('sortdir');
 
     $query = "SELECT "
         . '`d`.id, `d`.name as `name`, `d`.short_desc as `short_desc`, `d`.long_desc as `long_desc`, '
@@ -15,6 +15,15 @@ $app->get('/adminApi/getEvents', function ($request, $response, $args) {
         . "`e`.`id` as `event_id`, `e`.start_time as `start_time`, `e`.end_time as `end_time`, "
         . "UNIX_TIMESTAMP(`e`.date_added) as `date_added`, `e`.priority as `priority`"
         . "FROM event as `e` LEFT JOIN detail as `d` ON `e`.detail_id=`d`.`id` ";
+
+    if ($sortOn && $sortDir) {
+        // Validate the unbindable values
+        if (!preg_match('/(ASC)|(DESC)/', $sortDir)
+            || !preg_match('/(priority)|(name)|(start_time)|(short_desc)/', $sortOn)) {
+            throw new Exception('Invalid Parameters');
+        }
+        $query .= "ORDER BY `$sortOn` $sortDir";
+    }
 
     $stmt = $db->prepare($query);
 
@@ -34,6 +43,7 @@ $app->get('/adminApi/getEvents', function ($request, $response, $args) {
 
     return $response->withJson(
         array(
+            'query' => $query,
             'data' => $data,
         )
     );

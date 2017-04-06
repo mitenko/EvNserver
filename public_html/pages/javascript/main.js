@@ -140,9 +140,11 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
     /**
      * Returns the list of events
      */
-    $scope.getEvents = function () {
-        $http.get('/adminApi/getEvents')
+    $scope.getEvents = function (sorton, sortdir) {
+        $http.get('/adminApi/getEvents',
+            {params: {'sorton': sorton, 'sortdir': sortdir}})
             .then(function (response) {
+                console.log(response);
                 $scope.events = response.data.data;
             });
     };
@@ -167,7 +169,7 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
             });
     };
 
-    $scope.getEvents();
+    $scope.getEvents('priority', 'ASC');
     $scope.getDestinations();
     $scope.getCategoryData();
 });
@@ -177,6 +179,10 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
  */
 evnApp.controller('EvntTblCtrl', function EvntTblCtrl($scope, $http) {
     $scope.deleteEvent = $scope.$parent.buildEmptyEvent();
+    $scope.sortState = {
+        field: 'priority',
+        direction: 'ASC'
+    };
 
     /**
      * Opens up the Edit Event panel
@@ -208,6 +214,27 @@ evnApp.controller('EvntTblCtrl', function EvntTblCtrl($scope, $http) {
 
         $http.post('/adminApi/updateEvent',
             {'event': $scope.event});
+    };
+
+    /**
+     * Tracks the sorting state of the table
+     */
+    $scope.sortEventTable = function(field) {
+        // First update the sort state
+        if (field == $scope.sortState.field) {
+            // Toggle the sort direction
+            if ($scope.sortState.direction == 'ASC') {
+                $scope.sortState.direction = 'DESC';
+            } else {
+                $scope.sortState.direction = 'ASC';
+            }
+        } else {
+            $scope.sortState.field = field;
+            $scope.sortState.direction = 'ASC';
+        }
+
+        $scope.$parent.getEvents(
+            $scope.sortState.field, $scope.sortState.direction);
     };
 });
 

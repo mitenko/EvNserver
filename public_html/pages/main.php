@@ -24,10 +24,14 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
             <div class="panel panel-default">
                 <table class="table table-bordered">
                     <tr>
-                        <th>Priority <i class="btn pull-right glyphicon glyphicon-sort"></i></th>
-                        <th>Start Time<i class="btn pull-right glyphicon glyphicon-sort"></i></th>
-                        <th>Name <i class="btn pull-right glyphicon glyphicon-sort-by-alphabet"></i></th>
-                        <th>Short Description <i class="btn pull-right glyphicon glyphicon-sort-by-alphabet"></i></th>
+                        <th>Priority <i class="btn pull-right glyphicon glyphicon-sort"
+                                        ng-click="sortEventTable('priority');"></i></th>
+                        <th>Start Time<i class="btn pull-right glyphicon glyphicon-sort"
+                                         ng-click="sortEventTable('start_time');"></i></th>
+                        <th>Name <i class="btn pull-right glyphicon glyphicon-sort-by-alphabet"
+                                    ng-click="sortEventTable('name');"></i></th>
+                        <th>Short Description <i class="btn pull-right glyphicon glyphicon-sort-by-alphabet"
+                                                 ng-click="sortEventTable('short_desc');"></i></th>
                         <th>&nbsp
                             <a class="btn btn-success" href="#edit-event-panel"
                                data-toggle="tab" ng-click="editEvent(buildEmptyEvent());">
