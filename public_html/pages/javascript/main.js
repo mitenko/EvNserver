@@ -28,11 +28,19 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
     $scope.categories = [];
 
     var priorityData = new Array();
-    priorityData[0] = {value: 0, text: 'Ultra', cssClass: 'btn btn-danger'}
-    priorityData[1] = {value: 1, text: 'High', cssClass: 'btn btn-warning'}
-    priorityData[2] = {value: 2, text: 'Medium', cssClass: 'btn btn-success'}
-    priorityData[3] = {value: 3, text: 'Low', cssClass: 'btn btn-primary'}
+    priorityData[0] = {value: 0, text: 'Ultra', cssClass: 'btn btn-danger'};
+    priorityData[1] = {value: 1, text: 'High', cssClass: 'btn btn-warning'};
+    priorityData[2] = {value: 2, text: 'Medium', cssClass: 'btn btn-success'};
+    priorityData[3] = {value: 3, text: 'Low', cssClass: 'btn btn-primary'};
     $scope.priorityData = priorityData;
+
+    var costData = new Array();
+    costData[0] = {value: 0, text: 'Free'};
+    costData[1] = {value: 1, text: '$'};
+    costData[2] = {value: 2, text: '$$'};
+    costData[3] = {value: 3, text: '$$$'};
+    costData[4] = {value: 3, text: '$$$$'};
+    $scope.costData = costData;
 
     /**
      * Root Functions
@@ -50,7 +58,7 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
             imageURL: '',
             phone: '',
             website: '',
-            price: '',
+            cost: '',
             activities: [],
         };
         return emptyDetail;
@@ -212,8 +220,8 @@ evnApp.controller('EvntTblCtrl', function EvntTblCtrl($scope, $http) {
                 $scope.$parent.getEvents();
             });
 
-        $http.post('/adminApi/updateEvent',
-            {'event': $scope.event});
+        $scope.$parent.getEvents(
+            $scope.sortState.field, $scope.sortState.direction);
     };
 
     /**

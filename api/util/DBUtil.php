@@ -21,7 +21,8 @@ class DBUtil {
     public static function updateDetail($db, $detail) {
         $query = 'UPDATE `detail` as `d` '
             . 'SET `d`.`name`=:name, `d`.`short_desc`=:shortDesc, `d`.`long_desc`=:longDesc, '
-            . '`d`.`thumb_url`=:thumbURL, `d`.`image_url`=:imageURL, `d`.`phone`=:phone '
+            . '`d`.`thumb_url`=:thumbURL, `d`.`image_url`=:imageURL, `d`.`phone`=:phone, '
+            . '`d`.`website`=:website, `d`.`cost`=:cost '
             . 'WHERE `d`.`id`=:detailId';
         $stmt = $db->prepare($query);
 
@@ -33,6 +34,8 @@ class DBUtil {
         $stmt->bindParam(':thumbURL', $detail['thumbURL'], \PDO::PARAM_STR);
         $stmt->bindParam(':imageURL', $detail['imageURL'], \PDO::PARAM_STR);
         $stmt->bindParam(':phone', $detail['phone'], \PDO::PARAM_STR);
+        $stmt->bindParam(':website', $detail['website'], \PDO::PARAM_STR);
+        $stmt->bindParam(':cost', $detail['cost'], \PDO::PARAM_INT);
         $stmt->execute();
 
         self::updateDetailActivityMap($db, $detail);
@@ -46,8 +49,8 @@ class DBUtil {
      */
     public static function addDetail($db, $detail) {
         $query = 'INSERT INTO `detail` '
-            . '(`name`,`short_desc`,`long_desc`, `image_url`, `phone`) '
-            . 'VALUES (:name, :shortDesc, :longDesc, :imageURL, :phone)';
+            . '(`name`,`short_desc`,`long_desc`, `image_url`, `phone`, `website`,`cost`) '
+            . 'VALUES (:name, :shortDesc, :longDesc, :imageURL, :phone, :website, :cost)';
         $stmt = $db->prepare($query);
 
         // Bind the Parameters
@@ -56,6 +59,8 @@ class DBUtil {
         $stmt->bindParam(':longDesc', $detail['longDesc'], \PDO::PARAM_STR);
         $stmt->bindParam(':imageURL', $detail['imageURL'], \PDO::PARAM_STR);
         $stmt->bindParam(':phone', $detail['phone'], \PDO::PARAM_STR);
+        $stmt->bindParam(':website', $detail['website'], \PDO::PARAM_STR);
+        $stmt->bindParam(':cost', $detail['cost'], \PDO::PARAM_INT);
         $stmt->execute();
 
         $detailId = $db->getLastInsertId();

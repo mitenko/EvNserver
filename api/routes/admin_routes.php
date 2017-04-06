@@ -13,7 +13,8 @@ $app->get('/adminApi/getEvents', function ($request, $response, $args) {
         . '`d`.id, `d`.name as `name`, `d`.short_desc as `short_desc`, `d`.long_desc as `long_desc`, '
         . '`d`.thumb_url as `thumb_url`, `d`.image_url as `image_url`, `d`.phone as `phone`, '
         . "`e`.`id` as `event_id`, `e`.start_time as `start_time`, `e`.end_time as `end_time`, "
-        . "UNIX_TIMESTAMP(`e`.date_added) as `date_added`, `e`.priority as `priority`"
+        . "UNIX_TIMESTAMP(`e`.date_added) as `date_added`, `e`.priority as `priority`, "
+        . "`d`.`phone` as `phone`, `d`.website as `website`, `d`.cost as `cost` "
         . "FROM event as `e` LEFT JOIN detail as `d` ON `e`.detail_id=`d`.`id` ";
 
     if ($sortOn && $sortDir) {

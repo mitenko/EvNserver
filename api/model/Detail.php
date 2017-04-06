@@ -48,7 +48,7 @@ class Detail {
     /**
      * The location / event's price
      */
-    public $price;
+    public $cost;
 
     /**
      * Array of activity data types
@@ -66,6 +66,8 @@ class Detail {
         $this->thumbURL = $row['thumb_url'];
         $this->imageURL = $row['image_url'];
         $this->phone = $row['phone'];
+        $this->website = $row['website'];
+        $this->cost = intval($row['cost']);
 	}
 }
 ?>

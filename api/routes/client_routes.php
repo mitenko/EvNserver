@@ -11,7 +11,8 @@ $app->get('/api/getEvents', function ($request, $response, $args) {
     $query = "SELECT "
         . "`d`.id, `d`.name, `d`.short_desc, `d`.long_desc, `d`.thumb_url, `d`.image_url, `d`.phone, "
         . "`e`.`id` as event_id, `e`.start_time as start_time, `e`.end_time as end_time, "
-        . "UNIX_TIMESTAMP(`e`.date_added) as date_added, `e`.priority "
+        . "UNIX_TIMESTAMP(`e`.date_added) as date_added, `e`.priority, "
+        . "`d`.`phone` as `phone`, `d`.website as `website`, `d`.cost as `cost` "
         . "FROM event as `e` LEFT JOIN detail as `d` ON `e`.detail_id=`d`.`id` ";
 
     /** extra joins if we're limiting categories **/
