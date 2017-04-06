@@ -1,5 +1,10 @@
 <?php
 /**
+ * Configurations
+ */
+date_default_timezone_set('America/Vancouver');
+
+/**
  * Paths
  */
 define ('__API__', __DIR__ . '/../api/');

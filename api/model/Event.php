@@ -9,6 +9,7 @@ class Event {
     const HIGH = 'High';
     const MED = 'Med';
     const LOW = 'Low';
+    const DATETIME_FORMAT = 'M d, Y g:i A';
 
 	/**
 	 * The Detail class for the event
@@ -67,9 +68,9 @@ class Event {
         $this->detail = $detail;
         $this->id = intval($row['event_id']);
         $this->unixStartTime = intval($row['start_time']);
-        $this->readableStartTime = date(DATETIME_FORMAT, intval($row['start_time']));
+        $this->readableStartTime = date(self::DATETIME_FORMAT, intval($row['start_time']));
         $this->unixEndTime = intval($row['end_time']);
-        $this->readableEndTime = date(DATETIME_FORMAT, intval($row['end_time']));
+        $this->readableEndTime = date(self::DATETIME_FORMAT, intval($row['end_time']));
         $this->priority = intval($row['priority']);
         $this->readablePriority = \Evn\model\Event::toReadablePriority($this->priority);
 

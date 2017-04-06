@@ -12,7 +12,7 @@ $app->get('/adminApi/getEvents', function ($request, $response, $args) {
     $query = "SELECT "
         . '`d`.id, `d`.name as `name`, `d`.short_desc as `short_desc`, `d`.long_desc as `long_desc`, '
         . '`d`.thumb_url as `thumb_url`, `d`.image_url as `image_url`, `d`.phone as `phone`, '
-        . "`e`.`id` as `event_id`, UNIX_TIMESTAMP(`e`.start_time) as `start_time`, UNIX_TIMESTAMP(`e`.end_time) as `end_time`, "
+        . "`e`.`id` as `event_id`, `e`.start_time as `start_time`, `e`.end_time as `end_time`, "
         . "UNIX_TIMESTAMP(`e`.date_added) as `date_added`, `e`.priority as `priority`"
         . "FROM event as `e` LEFT JOIN detail as `d` ON `e`.detail_id=`d`.`id` ";
 
@@ -118,7 +118,7 @@ $app->post('/adminApi/updateEvent', function ($request, $response, $args) {
     $event = $request->getParsedBody()['event'];
 
     $query = 'UPDATE `event` as `ev` '
-        . 'SET `ev`.`priority`=:priority, `ev`.`start_time`=FROM_UNIXTIME(:starttime), `ev`.`end_time`=FROM_UNIXTIME(:endtime) '
+        . 'SET `ev`.`priority`=:priority, `ev`.`start_time`=:starttime, `ev`.`end_time`=:endtime '
         . 'WHERE `ev`.`id`=:eventId';
     $stmt = $db->prepare($query);
 
@@ -219,7 +219,7 @@ $app->post('/adminApi/addEvent', function ($request, $response, $args) {
      */
     $query = 'INSERT INTO `event` '
         . '(`detail_id`,`priority`,`start_time`,`end_time`) '
-        . ' VALUES (:detailId, :priority, FROM_UNIXTIME(:starttime), FROM_UNIXTIME(:endtime))';
+        . ' VALUES (:detailId, :priority, :starttime, :endtime)';
     $stmt = $db->prepare($query);
 
     // Bind the Parameters

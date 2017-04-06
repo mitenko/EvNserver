@@ -71,6 +71,10 @@ class DBUtil {
      * @param $detail
      */
     public static function updateDetailActivityMap($db, $detail) {
+        if (empty($detail['activities'])) {
+            throw new Exception('Activites undefined');
+        }
+
         // Update the detail_activity_map
         $query = 'DELETE FROM detail_activity_map WHERE `detail_id`=:detailId';
         $stmt = $db->prepare($query);
@@ -99,6 +103,10 @@ class DBUtil {
         $stmt = $db->prepare($query);
         $stmt->bindParam(':eventId', $event['id'], \PDO::PARAM_INT);
         $stmt->execute();
+
+        if (empty($event['destinations'])) {
+            return;
+        }
 
         foreach($event['destinations'] as $destinationId) {
             $query = 'INSERT INTO event_destination_map '

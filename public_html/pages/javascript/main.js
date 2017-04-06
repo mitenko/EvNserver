@@ -215,7 +215,7 @@ evnApp.controller('EvntTblCtrl', function EvntTblCtrl($scope, $http) {
  * Edit Event Controller
  */
 evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
-        $scope, $http) {
+        $scope, $http, $filter) {
     /**
      * Initializations
      */
@@ -226,11 +226,14 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
         endCalOpen: false,
         hasImage: false,
     };
-    $scope.dateFormat = 'dd-MMMM-yyyy';
-
+    $scope.dateOptions = {
+        timezone: 'pst'
+    };
+    $scope.pickerDateFormat = 'MMMM dd, yyyy';
     $scope.selectedCategory = {};
-    $scope.selectedActivity = { };
+    $scope.selectedActivity = {};
     $scope.priorityCssClass = 'btn btn-primary';
+    $scope.readableDateFormat = 'MMM d, yyyy h:mm a';
 
     /**
      * Called when the Event is set
@@ -238,8 +241,8 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
     $scope.$on('eventSelect', function(event, selectedEvent) {
         $scope.event = selectedEvent;
         $scope.backupEvent = jQuery.extend(true, {}, selectedEvent);
-        $scope.startDate = selectedEvent.unixStartTime * 1000;
-        $scope.endDate = selectedEvent.unixEndTime * 1000;
+        $scope.startDate = new Date(selectedEvent.unixStartTime * 1000);
+        $scope.endDate = new Date(selectedEvent.unixEndTime * 1000);
         $scope.priorityCssClass = $scope.$parent.getPriorityClass(selectedEvent.priority);
         $scope.state.hasImage = ($scope.event.detail.imageURL);
     });
@@ -269,9 +272,18 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
      * Send to the server!
      */
     $scope.onSave = function() {
+        if (!$scope.eventEditForm.$valid
+                || $scope.event.detail.activities.length == 0
+                || !($scope.uploadImage || $scope.event.detail.imageURL)) {
+            $('#incompleteEventModal').modal('show');
+            return;
+        }
+        $('.nav-tabs a[href="#events-panel"]').tab('show');
+
         console.log('Saving Event');
         console.log($scope.event);
-        var encodedEvent = angular.toJson({'event':$scope.event});
+        $scope.event.readableStartTime =
+            $filter('date')(new Date($scope.startDate), $scope.readableDateFormat);
         var detailId = $scope.event.detail.id;
 
         // Update the event if we have a detailId

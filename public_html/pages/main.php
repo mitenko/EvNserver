@@ -80,11 +80,11 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
         <div id="edit-event-panel" class="tab-pane fade" ng-controller="EditEvntCtrl">
             <br>
             <div class="panel panel-default col-md-6 col-md-offset-3"><br>
-                <form>
+                <form name="eventEditForm">
                     <div class="row">
                         <span class="col-md-9 form-group">
                             <label for="name">Name</label>
-                            <input type="text" class="form-control input-lg"
+                            <input type="text" class="form-control input-lg"  ng-required="true"
                                    id="name" ng-model='event.detail.name' placeholder="Event Title">
                         </span>
 
@@ -124,14 +124,14 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
                     <!-- Short Description -->
                     <div class="form-group">
                         <label for="shortDesc">Short Description</label>
-                        <textarea class="form-control" rows='3' id="shortDesc"
+                        <textarea class="form-control" rows='3' id="shortDesc" ng-required="true"
                                   placeholder="A short summary of the event" ng-model='event.detail.shortDesc'></textarea>
                     </div>
 
                     <!-- Long Description -->
                     <div class="form-group">
                         <label for="longDesc">Long Description</label>
-                        <textarea class="form-control" rows='8' id="longDesc"
+                        <textarea class="form-control" rows='8' id="longDesc" ng-required="true"
                                   placeholder="A more detailed description of the event. No longer than three paragraphs." ng-model='event.detail.longDesc'></textarea>
                     </div>
 
@@ -140,8 +140,10 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
                         <div class="form-group col-md-6">
                             <label for="startDate">Start Date</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" id="startDate" uib-datepicker-popup="{{dateFormat}}"
-                                       uib-datepicker-popup ng-model="startDate" ng-change="startDateChange()"
+                                <input type="text" class="form-control" id="startDate"
+                                       uib-datepicker-popup="{{pickerDateFormat}}"
+                                       ng-model="startDate"
+                                       ng-change="startDateChange()"
                                        ng-required="true" is-open="state.startCalOpen"/>
                                 <span class="input-group-addon" style="cursor: pointer;">
                                     <i class="glyphicon glyphicon-calendar text-muted" ng-click="openStartCal();"></i>
@@ -161,7 +163,8 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
                         <div class="form-group col-md-6">
                             <label for="endDate">End Date</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" id="endDate" uib-datepicker-popup="{{dateFormat}}"
+                                <input type="text" class="form-control"
+                                       id="endDate" uib-datepicker-popup="{{pickerDateFormat}}"
                                        uib-datepicker-popup ng-model="endDate" ng-change="endDateChange()"
                                        ng-required="true" is-open="state.endCalOpen"/>
                                 <span class="input-group-addon" style="cursor: pointer;">
@@ -253,11 +256,28 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
                         </div>
                     </div>
 
+                    <!-- Incomplete Fields Modal -->
+                    <div id="incompleteEventModal" class="modal fade" role="dialog">
+                        <div class="modal-sm centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    Missing required fields!
+                                </div>
+                                <div class="modal-body">
+                                    An event requires a <b>name, a short description, a long description,
+                                        an image and at least one associated activity.</b>
+                                </div>
+                                <div class="modal-footer">
+                                    <a type="button" class="btn btn-primary" data-dismiss="modal">Close</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Save and Cancel Buttons -->
                     <hr>
-                    <br><div class="form-group text-center">
-                        <a class="btn btn-success" ng-click="onSave();"
-                           data-toggle="tab" href="#events-panel">
+                    <br><div class="form-group text-center"> <!-- data-toggle="tab" href="#events-panel"-->
+                        <a class="btn btn-success" ng-click="onSave();">
                             <span class="glyphicon glyphicon-cloud-upload"></span> Save</a>
                         &nbsp;
                         <a class="btn btn-danger" data-toggle="tab" href="#events-panel" ng-click="onCancel();">
