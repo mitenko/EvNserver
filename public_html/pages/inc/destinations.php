@@ -9,8 +9,8 @@
                 <th>Cost <i class="btn pull-right glyphicon glyphicon-sort"
                             ng-click="sortDestTable('cost');"></i></th>
                 <th>&nbsp
-                    <a class="btn btn-success" href="#edit-event-panel"
-                       data-toggle="tab" ng-click="editEvent(buildEmptyEvent());">
+                    <a class="btn btn-success" href="#edit-dest-panel"
+                       data-toggle="tab" ng-click="editDestination(buildEmptyDestination());">
                         <span class="glyphicon glyphicon-plus"></span> Add Destination</a></th>
             </tr>
 
@@ -19,7 +19,7 @@
                 <td class='hideOverflow'>
                     {{destination.detail.shortDesc | limitTo : 60}}{{destination.detail.shortDesc.length > 60 ? '...' : ''}}
                 </td>
-                <td class="money">{{getCostName(event.detail.cost);}}</td>
+                <td class="money">{{getCostName(destination.detail.cost);}}</td>
                 <td>
                             <span class="btn-toolbar">
                                 <a class="btn btn-primary" href="#edit-dest-panel" data-toggle="tab"
@@ -27,8 +27,8 @@
                                     <i class="glyphicon glyphicon-pencil"></i>
                                 </a>
                                 <a class="btn btn-warning" data-toggle="modal"
-                                   data-target="#confirmDeleteDestination"
-                                   ng-click="confirmDeleteDestination(destination);">
+                                   data-target="#confirmDeleteDestModal"
+                                   ng-click="confirmDeleteDest(destination);">
                                     <i class="glyphicon glyphicon-trash"></i>
                                 </a>
                             </span>
@@ -37,18 +37,18 @@
         </table>
 
         <!-- Confirm Delete Modal -->
-        <div id="confirmDeleteEvent" class="modal fade" role="dialog">
+        <div id="confirmDeleteDestModal" class="modal fade" role="dialog">
             <div class="modal-sm centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header form-group">
                         Confirm Delete
                     </div>
                     <div class="modal-body">
-                        Are you sure you want to delete the event <b>{{deleteEvent.detail.name}}</b>?
+                        Are you sure you want to delete the destination <b>{{deleteDestination.detail.name}}</b>?
                     </div>
                     <div class="modal-footer btn-toolbar">
                         <a type="button" class="btn btn-danger"
-                           data-dismiss="modal" ng-click="onCosdfasdnfirmDeleteEvent(deleteEvent.id);">
+                           data-dismiss="modal" ng-click="onConfirmDeleteDest(deleteDestination.id);">
                             <span class="glyphicon glyphicon-trash"></span> Delete</a>
                         <a type="button" class="btn btn-warning" data-dismiss="modal">Cancel</a>
                     </div>
@@ -229,9 +229,8 @@
                     <div map-lazy-load="https://maps.google.com/maps/api/js"
                        map-lazy-load-params="{{googleMapsUrl}}" >
                         <ng-map default-style="true"
-                                center="{{dest.latitude}},{{dest.longitude}}"
-                                zoom="15">
-                            <marker position="{{dest.latitude}},{{dest.longitude}}" title="{{dest.detail.name}}"></marker>
+                                center="{{defaultCenter.lat() + ',' + defaultCenter.lng()}}"
+                                zoom="{{defaultZoom}}">
                         </ng-map>
                     </div>
                 </div>
@@ -277,7 +276,7 @@
                 <a class="btn btn-success" ng-click="onSaveDest();">
                     <span class="glyphicon glyphicon-cloud-upload"></span> Save</a>
                 &nbsp;
-                <a class="btn btn-danger" data-toggle="tab" href="#destination-panel" ng-click="onCancel();">
+                <a class="btn btn-danger" data-toggle="tab" href="#destination-panel" ng-click="onCancelDest();">
                     <span class="glyphicon glyphicon-remove"></span> Cancel</a>
             </div>
 

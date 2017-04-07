@@ -166,7 +166,7 @@ $app->post('/adminApi/deleteEvent', function ($request, $response, $args) {
     $eventId = $request->getParsedBody()['eventId'];
 
     if (!$eventId) {
-        throw new Exception('Expected event data ' + print_r($request->getQueryParams(), true));
+        throw new Exception('Expected event data');
     }
 
     // Grab the detailId
@@ -336,7 +336,6 @@ $app->post('/adminApi/updateDest', function ($request, $response, $args) {
     $stmt->bindParam(':longitude', $dest['longitude']);
     $stmt->bindParam(':destId', $dest['id'], \PDO::PARAM_INT);
     $stmt->execute();
-    $returnQ = $query;
 
     // Update the address
     $address = $dest['address'];
@@ -358,5 +357,121 @@ $app->post('/adminApi/updateDest', function ($request, $response, $args) {
     // Update the detail
     \Evn\util\DBUtil::updateDetail($db, $dest['detail']);
 
-    return $response->getBody()->write($returnQ);
+    return $response;
+});
+
+/**
+ * Adds a new destination to the database
+ */
+$app->post('/adminApi/addDest', function ($request, $response, $args) {
+    $db = new \Evn\classes\Database;
+    $dest = $request->getParsedBody()['dest'];
+
+    /**
+     * First insert the detail to get the detailId
+     */
+    $detailId = \Evn\util\DBUtil::addDetail($db, $dest['detail']);
+
+    /**
+     * Next add the new address
+     */
+    $address = $dest['address'];
+    $query = 'INSERT INTO `address` '
+        . '(`address_line_one`,`address_line_two`,`postal_code`,`city`) '
+        . ' VALUES (:lineOne, :lineTwo, :postalCode, :city)';
+    $stmt = $db->prepare($query);
+
+    // Bind the Parameters
+    $stmt->bindParam(':lineOne', $address['lineOne'], \PDO::PARAM_STR);
+    $stmt->bindParam(':lineTwo', $address['lineTwo'], \PDO::PARAM_STR);
+    $stmt->bindParam(':postalCode', $address['postalCode'], \PDO::PARAM_STR);
+    $stmt->bindParam(':city', $address['city'], \PDO::PARAM_STR);
+    $stmt->execute();
+    $addressId = $db->getLastInsertId();
+
+    /**
+     * Now insert the Event
+     */
+    $query = 'INSERT INTO `destination` '
+        . '(`address_id`,`detail_id`,`latitude`,`longitude`) '
+        . ' VALUES (:addressId, :detailId, :latitude, :longitude)';
+    $stmt = $db->prepare($query);
+
+    // Bind the Parameters
+    $stmt->bindParam(':addressId', $addressId, \PDO::PARAM_INT);
+    $stmt->bindParam(':detailId', $detailId, \PDO::PARAM_INT);
+    $stmt->bindParam(':latitude', $dest['latitude']);
+    $stmt->bindParam(':longitude', $dest['longitude']);
+    $stmt->execute();
+    $destId = $db->getLastInsertId();
+
+    return $response->withJson(
+        array(
+            'addressId' => $addressId,
+            'detailId' => $detailId,
+            'destId' => $destId,
+        ));
+});
+
+
+/**
+ * Deletes a destination and all associated data from the database
+ */
+$app->post('/adminApi/deleteDest', function ($request, $response, $args) {
+    $db = new \Evn\classes\Database;
+    $destId = $request->getParsedBody()['destId'];
+
+    if (!$destId) {
+        throw new Exception('Expected detail data');
+    }
+
+    // Grab the detailId
+    $query = 'SELECT `detail_id`,`address_id` FROM `destination` WHERE `id`=:destId';
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':destId', $destId, \PDO::PARAM_INT);
+    $stmt->execute();
+    $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+    if (!$row) {
+        throw new Exception('Invalid detail data');
+    }
+    $detailId = $row['detail_id'];
+    $addressId = $row['address_id'];
+
+    // Delete from event
+    $query = 'DELETE FROM `destination` WHERE `id`=:destId';
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':destId', $destId, \PDO::PARAM_INT);
+    $stmt->execute();
+
+    // Delete the image
+    $query = 'SELECT `image_url` FROM `detail` WHERE `id`=:detailId';
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':detailId', $detailId, \PDO::PARAM_INT);
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($row['image_url']) {
+        $delFileParts = pathinfo($row['image_url']);
+        $delFile = __IMGDIR__ . $delFileParts['basename'];
+        unlink($delFile);
+    }
+
+    // Delete from detail
+    $query = 'DELETE FROM `detail` WHERE `id`=:detailId';
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':detailId', $detailId, \PDO::PARAM_INT);
+    $stmt->execute();
+
+    // Delete from address
+    $query = 'DELETE FROM `address` WHERE `id`=:addressId';
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':addressId', $addressId, \PDO::PARAM_INT);
+    $stmt->execute();
+
+    // Delete from the detail_activity_map
+    $query = 'DELETE FROM `detail_activity_map` WHERE `detail_id`=:detailId';
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':detailId', $detailId, \PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $response;
 });

@@ -30,6 +30,19 @@ evnApp.controller('DestTblCtrl', function DestTblCtrl($scope, $http) {
     };
 
     /**
+     * Deletes the destination on confirmation
+     */
+    $scope.onConfirmDeleteDest = function(destId) {
+        console.log('Deleting ' + destId);
+        $http.post('/adminApi/deleteDest', {'destId': destId})
+            .then(function(response) {
+                console.log(response);
+                $scope.$parent.getDestinations(
+                    $scope.sortState.field, $scope.sortState.direction);
+            });
+    };
+
+    /**
      * Tracks the sorting state of the table
      */
     $scope.sortDestTable = function(field) {
@@ -60,6 +73,11 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
      * Initializations
      */
     $scope.googleMapsUrl = "https://maps.google.com/maps/api/js?key=AIzaSyCDL0vv7gI6sH4Upl8xkrcow6jygDa0aK";
+    $scope.defaultCenter = new google.maps.LatLng(
+        49.201996, -123.958657);
+    $scope.marker = new google.maps.Marker({});
+    $scope.defaultZoom = 10;
+    $scope.zoomWithLocation = 15;
     $scope.uploadImage = '';
     $scope.dest = $scope.$parent.buildEmptyDestination();
     $scope.state = {
@@ -75,14 +93,32 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
         $scope.dest = selectedDest;
         $scope.backupDest = jQuery.extend(true, {}, selectedDest);
         $scope.state.hasImage = ($scope.dest.detail.imageURL);
+        $scope.uploadImage = '';
 
         // Resize map
         // See https://github.com/allenhwkim/angularjs-google-maps/issues/471
         $timeout(function() {
             NgMap.getMap().then(function(map) {
-                var center = map.getCenter();
+                var center;
+                var zoom = $scope.defaultZoom;
+                if ($scope.dest.latitude && $scope.dest.longitude) {
+                    center = new google.maps.LatLng(
+                        $scope.dest.latitude, $scope.dest.longitude);
+                    zoom = $scope.zoomWithLocation;
+
+                    $scope.marker = new google.maps.Marker({
+                        title: $scope.dest.detail.name,
+                    });
+                    $scope.marker.setPosition(center);
+                    $scope.marker.setMap(map);
+
+                } else {
+                    center = $scope.defaultCenter;
+                    $scope.marker.setMap(null);
+                }
                 google.maps.event.trigger(map, 'resize');
                 map.setCenter(center);
+                map.setZoom(zoom);
             });
         }, 500);
     });
@@ -93,18 +129,18 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
     /**
      * Restore with the backup
      */
-    $scope.onCancel = function() {
+    $scope.onCancelDest = function() {
         // Find the destination
         index = -1;
-        for (var i = 0; i < $scope.$parent.events; i++) {
-            if ($scope.backupEvent.id == $scope.$parent.destinations[i].id) {
+        for (var i = 0; i < $scope.$parent.destinations.length; i++) {
+            if ($scope.backupDest.id == $scope.$parent.destinations[i].id) {
                 index = i;
                 break;
             }
         }
         if (index > -1) {
-            $scope.dest = $scope.backupEvent;
-            $scope.$parent.destinations[index] = $scope.backupEvent;
+            $scope.dest = $scope.backupDest;
+            $scope.$parent.destinations[index] = $scope.backupDest;
         }
     };
 
@@ -134,16 +170,16 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
                 $scope.$parent.uploadImageToServer(detailId, $scope.uploadImage);
             }
         } else {
-            return;
             // Add a new event
-            $http.post('/adminApi/addEvent',
-                {'event': $scope.event})
+            $http.post('/adminApi/addDest',
+                {'dest': $scope.dest})
                 .then(function(response) {
                     detailId = response.data.detailId;
-                    $scope.event.detail.id = detailId;
-                    $scope.event.id = response.data.eventId;
+                    $scope.dest.detail.id = detailId;
+                    $scope.dest.address.id = response.data.addressId;
+                    $scope.dest.id = response.data.destId;
 
-                    $scope.$parent.getEvents();
+                    $scope.$parent.getDestinations('name', 'ASC');
                     // Don't upload the image until we have a detailId
                     if ($scope.uploadImage) {
                         $scope.$parent.uploadImageToServer(detailId, $scope.uploadImage);
@@ -203,6 +239,7 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
             function(results, status) {
                 if (status == google.maps.GeocoderStatus.OK) {
                     console.log(results);
+                    // Update the Address itself
                     var addressComponents = results[0].address_components;
                     $scope.dest.address.lineOne =
                         $scope.$parent.getAddressComponent(
@@ -218,12 +255,21 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
                         $scope.$parent.getAddressComponent(
                             addressComponents, 'locality');
 
+                    // Update the lat / lng
                     var geometry = results[0].geometry;
-                    NgMap.getMap().then(function(map) {
-                        map.setCenter(results[0].geometry.location);
-                    });
                     $scope.dest.latitude = geometry.location.lat();
                     $scope.dest.longitude = geometry.location.lng();
+
+                    // Update the marker
+                    $scope.marker = new google.maps.Marker({
+                        title: $scope.dest.detail.name,
+                    });
+                    $scope.marker.setPosition(geometry.location);
+                    NgMap.getMap().then(function(map) {
+                        map.setCenter(results[0].geometry.location);
+                        $scope.marker.setMap(map);
+                        map.setZoom($scope.zoomWithLocation);
+                    });
                 } else {
                     alert('Geocode was not successful for the following reason: ' + status);
                 }

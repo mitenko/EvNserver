@@ -34,11 +34,9 @@ evnApp.controller('EvntTblCtrl', function EvntTblCtrl($scope, $http) {
         $http.post('/adminApi/deleteEvent', {'eventId': eventId})
             .then(function(response) {
                 console.log(response);
-                $scope.$parent.getEvents();
+                $scope.$parent.getEvents(
+                    $scope.sortState.field, $scope.sortState.direction);
             });
-
-        $scope.$parent.getEvents(
-            $scope.sortState.field, $scope.sortState.direction);
     };
 
     /**
