@@ -30,7 +30,7 @@ class Destination {
 	 */
 	public function __construct($row, $detail) {
         $this->detail = $detail;
-        $this->id = intval($row['id']);
+        $this->id = intval($row['destId']);
         $this->longitude = floatval($row['longitude']);
         $this->latitude = floatval($row['latitude']);
 

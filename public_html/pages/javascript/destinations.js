@@ -91,6 +91,103 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
      * Button Events
      */
     /**
+     * Restore with the backup
+     */
+    $scope.onCancel = function() {
+        // Find the destination
+        index = -1;
+        for (var i = 0; i < $scope.$parent.events; i++) {
+            if ($scope.backupEvent.id == $scope.$parent.destinations[i].id) {
+                index = i;
+                break;
+            }
+        }
+        if (index > -1) {
+            $scope.dest = $scope.backupEvent;
+            $scope.$parent.destinations[index] = $scope.backupEvent;
+        }
+    };
+
+    /**
+     * Send to the server!
+     */
+    $scope.onSaveDest = function() {
+        if (!$scope.eventDestForm.$valid
+            || $scope.dest.detail.activities.length == 0
+            || !($scope.uploadImage || $scope.dest.detail.imageURL)) {
+            $('#incompleteDestModal').modal('show');
+            return;
+        }
+        $('.nav-tabs a[href="#destination-panel"]').tab('show');
+
+        console.log('Saving Destination');
+        console.log($scope.dest);
+        var detailId = $scope.dest.detail.id;
+        var addressId = $scope.dest.address.id;
+
+        // Update the event if we have a detailId
+        if (detailId) {
+            $http.post('/adminApi/updateDest',
+                {'dest': $scope.dest}).then(function(response) {console.log(response);});
+
+            if ($scope.uploadImage) {
+                $scope.$parent.uploadImageToServer(detailId, $scope.uploadImage);
+            }
+        } else {
+            return;
+            // Add a new event
+            $http.post('/adminApi/addEvent',
+                {'event': $scope.event})
+                .then(function(response) {
+                    detailId = response.data.detailId;
+                    $scope.event.detail.id = detailId;
+                    $scope.event.id = response.data.eventId;
+
+                    $scope.$parent.getEvents();
+                    // Don't upload the image until we have a detailId
+                    if ($scope.uploadImage) {
+                        $scope.$parent.uploadImageToServer(detailId, $scope.uploadImage);
+                    }
+                });
+        }
+    };
+    /**
+     * Destination Activity Methods
+     */
+    /**
+     * Removes the Destination
+     */
+    $scope.removeActivityFromDest = function(id) {
+        var index = -1;
+        for(var i = 0; i < $scope.dest.detail.activities.length; i++) {
+            if ($scope.dest.detail.activities[i].id == id) {
+                index = i;
+                break;
+            }
+        }
+        if (index > -1) {
+            $scope.dest.detail.activities.splice(index,1);
+        }
+    };
+
+    /**
+     * Adds an Activity
+     */
+    $scope.addActivityToDest = function() {
+        var selectedId = $scope.selectedActivity.id;
+        var index = -1;
+        for(var i = 0; i < $scope.dest.detail.activities.length; i++) {
+            if ($scope.dest.detail.activities[i].id == selectedId) {
+                index = i;
+                break;
+            }
+        }
+        if (index == -1) {
+            $scope.dest.detail.activities.push($scope.selectedActivity);
+        }
+    };
+
+    /**
      * Determine the Destination lat / lng from address
      */
     $scope.getLocationFromAddress = function() {

@@ -136,6 +136,51 @@
                 </div>
             </div>
 
+            <!-- Activity Section -->
+            <hr>
+            <div class="form-group">
+                <label for="activities" class="col-md-12">Activities
+                    <a class="btn btn-success pull-right" data-toggle="modal" data-target="#destActivitySelect">Add
+                        Activity</a>
+                </label>
+                <div id="activities" class="btn-toolbar">
+                    <a class="btn btn-primary flow-btn" ng-repeat="activity in dest.detail.activities">
+                        {{activity.category + '::' + activity.name}}
+                        <span class="glyphicon glyphicon-remove"
+                              ng-click="removeActivityFromDest(activity.id);"></span></a>
+                </div>
+            </div>
+
+            <!-- Activity Select Modal -->
+            <div id="destActivitySelect" class="modal fade" role="dialog">
+                <div class="modal-sm centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header form-group">
+                            Select a Category and Activity
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="category">Category</label>
+                                <select class="form-control" id="category" ng-change="catChange();"
+                                        ng-model="selectedCategory"
+                                        ng-options="category.name for category in categories">
+                                </select>
+                                <label for="activity">Activity</label>
+                                <select class="form-control" id="activity"
+                                        ng-model="selectedActivity"
+                                        ng-options="activity.name for activity in selectedCategory.activities">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer btn-toolbar">
+                            <a type="button" class="btn btn-success" ng-click="addActivityToDest();">
+                                <span class="glyphicon glyphicon-plus"></span> Add</a>
+                            <a type="button" class="btn btn-primary" data-dismiss="modal">Done</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Address -->
             <div class="row"><hr>
                 <div class="form-group col-md-12">
@@ -148,7 +193,7 @@
             <div class="row">
                 <div class="form-group col-md-12">
                     <label for="addressTwo">Address Line Two</label>
-                    <input type="text" class="form-control" ng-required="true"
+                    <input type="text" class="form-control"
                            id="addressTwo" ng-model='dest.address.lineTwo' placeholder="">
                 </div>
             </div>
@@ -157,13 +202,13 @@
             <div class="row">
                 <div class="form-group col-md-6">
                     <label for="postalCode">Postal Code</label>
-                    <input type="text" class="form-control"
+                    <input type="text" class="form-control" ng-required="true"
                            id="postalCode" ng-model='dest.address.postalCode' placeholder="Postal Code">
                 </div>
 
                 <span class="col-md-6 form-group">
                     <label for="city">City</label>
-                    <input type="text" class="form-control"
+                    <input type="text" class="form-control" ng-required="true"
                            id="city" ng-model='dest.address.city' placeholder="City">
                 </span>
             </div>
@@ -178,6 +223,7 @@
             </div>
 
             <!-- Destination Map -->
+            <hr>
             <div class="row">
                 <div class="form-group col-md-12">
                     <div map-lazy-load="https://maps.google.com/maps/api/js"
@@ -195,15 +241,44 @@
             <div class="row">
                 <div class="form-group col-md-6">
                     <label for="latitude">Latitude</label>
-                    <input type="text" class="form-control"
+                    <input type="text" class="form-control" ng-required="true"
                            id="latitude" ng-model='dest.latitude' placeholder="Latitude">
                 </div>
 
                 <span class="col-md-6 form-group">
                     <label for="longitude">Longitude</label>
-                    <input type="text" class="form-control"
+                    <input type="text" class="form-control" ng-required="true"
                            id="longitude" ng-model='dest.longitude' placeholder="Longitude">
                 </span>
+            </div>
+
+            <!-- Incomplete Fields Modal -->
+            <div id="incompleteDestModal" class="modal fade" role="dialog">
+                <div class="modal-sm centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            Missing required fields!
+                        </div>
+                        <div class="modal-body">
+                            An event requires a <b>name, a short description, a long description,
+                                an image, a valid address and location and at least one associated activity.</b>
+                        </div>
+                        <div class="modal-footer">
+                            <a type="button" class="btn btn-primary" data-dismiss="modal">Close</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save and Cancel Buttons -->
+            <hr>
+            <br>
+            <div class="form-group text-center"> <!-- data-toggle="tab" href="#events-panel"-->
+                <a class="btn btn-success" ng-click="onSaveDest();">
+                    <span class="glyphicon glyphicon-cloud-upload"></span> Save</a>
+                &nbsp;
+                <a class="btn btn-danger" data-toggle="tab" href="#destination-panel" ng-click="onCancel();">
+                    <span class="glyphicon glyphicon-remove"></span> Cancel</a>
             </div>
 
         </form>

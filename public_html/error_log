@@ -1,3 +1,0 @@
-[05-Apr-2017 17:17:25 America/Vancouver] PHP Notice:  Undefined index: event in /home/eventsna/api/routes/admin_routes.php on line 118
-[05-Apr-2017 17:17:25 America/Vancouver] PHP Notice:  Undefined index: detail in /home/eventsna/api/routes/admin_routes.php on line 136
-[05-Apr-2017 17:17:25 America/Vancouver] PHP Fatal error:  Class 'Evn\util\Exception' not found in /home/eventsna/api/util/DBUtil.php on line 75

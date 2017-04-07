@@ -10,7 +10,7 @@ $app->get('/adminApi/getEvents', function ($request, $response, $args) {
     $sortDir = $request->getQueryParam('sortdir');
 
     $query = "SELECT "
-        . '`d`.id, `d`.name as `name`, `d`.short_desc as `short_desc`, `d`.long_desc as `long_desc`, '
+        . '`d`.id as `detailId`, `d`.name as `name`, `d`.short_desc as `short_desc`, `d`.long_desc as `long_desc`, '
         . '`d`.thumb_url as `thumb_url`, `d`.image_url as `image_url`, `d`.phone as `phone`, '
         . "`e`.`id` as `event_id`, `e`.start_time as `start_time`, `e`.end_time as `end_time`, "
         . "UNIX_TIMESTAMP(`e`.date_added) as `date_added`, `e`.priority as `priority`, "
@@ -57,10 +57,12 @@ $app->get('/adminApi/getDestinations', function ($request, $response, $args) {
     $db = new \Evn\classes\Database;
     $sortOn = $request->getQueryParam('sorton');
     $sortDir = $request->getQueryParam('sortdir');
+    $categories = $request->getQueryParam('category');
+    $activities = $request->getQueryParam('activity');
 
     $query = "SELECT "
-        . '`d`.id, `d`.name, `d`.short_desc, `d`.long_desc, `d`.thumb_url, `d`.image_url, `d`.phone, '
-        . '`dest`.`latitude`, `dest`.`longitude`, '
+        . '`d`.id as `detailId`, `d`.name, `d`.short_desc, `d`.long_desc, `d`.thumb_url, `d`.image_url, `d`.phone, '
+        . '`dest`.id as `destId`, `dest`.`latitude`, `dest`.`longitude`, '
         . '`a`.`id` as `address_id`, `a`.`address_line_one`, `a`.`address_line_two`, `a`.`postal_code`,`a`.`city` '
         . 'FROM destination as `dest` '
         . 'LEFT JOIN `detail` as `d` ON `dest`.`detail_id`=`d`.`id` '
@@ -312,4 +314,49 @@ $app->post('/adminApi/updateImage', function ($request, $response, $args) {
             'fileparts' => $delFileParts,
             'delfile' => $delFile,
         ));
+});
+
+/**
+ * Updates a Destination
+ */
+$app->post('/adminApi/updateDest', function ($request, $response, $args) {
+    $db = new \Evn\classes\Database;
+    /**
+     * Update the Event
+     */
+    $dest = $request->getParsedBody()['dest'];
+
+    $query = 'UPDATE `destination` as `d` '
+        . 'SET `d`.`latitude`=:latitude, `d`.`longitude`=:longitude '
+        . 'WHERE `d`.`id`=:destId';
+    $stmt = $db->prepare($query);
+
+    // Bind the Parameters
+    $stmt->bindParam(':latitude', $dest['latitude']);
+    $stmt->bindParam(':longitude', $dest['longitude']);
+    $stmt->bindParam(':destId', $dest['id'], \PDO::PARAM_INT);
+    $stmt->execute();
+    $returnQ = $query;
+
+    // Update the address
+    $address = $dest['address'];
+    $query = 'UPDATE `address` as `a` '
+        . 'SET `a`.`address_line_one`=:lineOne, `a`.`address_line_two`=:lineTwo, '
+        . '`a`.`postal_code`=:postalCode, `a`.`city`=:city '
+        . 'WHERE `a`.`id`=:addressId';
+    $stmt = $db->prepare($query);
+
+    // Bind the Parameters
+    $stmt->bindParam(':lineOne', $address['lineOne'], \PDO::PARAM_STR);
+    $stmt->bindParam(':lineTwo', $address['lineTwo'], \PDO::PARAM_STR);
+    $stmt->bindParam(':postalCode', $address['postalCode'], \PDO::PARAM_STR);
+    $stmt->bindParam(':city', $address['city'], \PDO::PARAM_STR);
+    $stmt->bindParam(':addressId', $address['id'], \PDO::PARAM_INT);
+    $stmt->execute();
+
+
+    // Update the detail
+    \Evn\util\DBUtil::updateDetail($db, $dest['detail']);
+
+    return $response->getBody()->write($returnQ);
 });

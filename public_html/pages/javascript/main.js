@@ -59,7 +59,7 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
             imageURL: '',
             phone: '',
             website: '',
-            cost: '',
+            cost: 0,
             activities: [],
         };
         return emptyDetail;
