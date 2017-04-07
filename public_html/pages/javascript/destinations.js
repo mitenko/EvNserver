@@ -93,7 +93,9 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
         $scope.dest = selectedDest;
         $scope.backupDest = jQuery.extend(true, {}, selectedDest);
         $scope.state.hasImage = ($scope.dest.detail.imageURL);
-        $scope.uploadImage = '';
+        if (!$scope.state.hasImage) {
+            $('.fileinput').fileinput('clear');
+        }
 
         // Resize map
         // See https://github.com/allenhwkim/angularjs-google-maps/issues/471
@@ -159,7 +161,7 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
         console.log('Saving Destination');
         console.log($scope.dest);
         var detailId = $scope.dest.detail.id;
-        var addressId = $scope.dest.address.id;
+        console.log($scope.uploadImage);
 
         // Update the event if we have a detailId
         if (detailId) {
@@ -179,11 +181,12 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
                     $scope.dest.address.id = response.data.addressId;
                     $scope.dest.id = response.data.destId;
 
-                    $scope.$parent.getDestinations('name', 'ASC');
                     // Don't upload the image until we have a detailId
                     if ($scope.uploadImage) {
                         $scope.$parent.uploadImageToServer(detailId, $scope.uploadImage);
                     }
+
+                    $scope.$parent.getDestinations('name', 'ASC');
                 });
         }
     };

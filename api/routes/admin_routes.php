@@ -61,7 +61,8 @@ $app->get('/adminApi/getDestinations', function ($request, $response, $args) {
     $activities = $request->getQueryParam('activity');
 
     $query = "SELECT "
-        . '`d`.id as `detailId`, `d`.name, `d`.short_desc, `d`.long_desc, `d`.thumb_url, `d`.image_url, `d`.phone, '
+        . '`d`.id as `detailId`, `d`.name, `d`.short_desc, `d`.long_desc, `d`.thumb_url, '
+        . '`d`.image_url, `d`.phone, `d`.website, `d`.cost, '
         . '`dest`.id as `destId`, `dest`.`latitude`, `dest`.`longitude`, '
         . '`a`.`id` as `address_id`, `a`.`address_line_one`, `a`.`address_line_two`, `a`.`postal_code`,`a`.`city` '
         . 'FROM destination as `dest` '

@@ -65,6 +65,7 @@ class DBUtil {
 
         $detailId = $db->getLastInsertId();
 
+        $detail['id'] = $detailId;
         self::updateDetailActivityMap($db, $detail);
 
         return $detailId;

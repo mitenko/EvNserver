@@ -92,7 +92,6 @@
                 </div>
             </div>
 
-
             <!-- Short Description -->
             <div class="form-group">
                 <label for="shortDesc">Short Description</label>

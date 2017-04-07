@@ -95,6 +95,9 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
         $scope.endDate = new Date(selectedEvent.unixEndTime * 1000);
         $scope.priorityCssClass = $scope.$parent.getPriorityClass(selectedEvent.priority);
         $scope.state.hasImage = ($scope.event.detail.imageURL);
+        if (!$scope.state.hasImage) {
+            $('.fileinput').fileinput('clear');
+        }
     });
 
     /**

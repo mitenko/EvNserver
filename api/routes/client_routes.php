@@ -9,7 +9,8 @@ $app->get('/api/getEvents', function ($request, $response, $args) {
     $activities = $request->getQueryParam('activity');
 
     $query = "SELECT "
-        . "`d`.id as `detailId`, `d`.name, `d`.short_desc, `d`.long_desc, `d`.thumb_url, `d`.image_url, `d`.phone, "
+        . '`d`.id as `detailId`, `d`.name, `d`.short_desc, `d`.long_desc, `d`.thumb_url, '
+        . '`d`.image_url, `d`.phone, `d`.website, `d`.cost, '
         . "`e`.`id` as event_id, `e`.start_time as start_time, `e`.end_time as end_time, "
         . "UNIX_TIMESTAMP(`e`.date_added) as date_added, `e`.priority, "
         . "`d`.`phone` as `phone`, `d`.website as `website`, `d`.cost as `cost` "
