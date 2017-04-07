@@ -3,9 +3,11 @@
         <table class="table table-bordered">
             <tr>
                 <th>Name <i class="btn pull-right glyphicon glyphicon-sort-by-alphabet"
-                            ng-click="sortEventTable('name');"></i></th>
+                            ng-click="sortDestTable('name');"></i></th>
                 <th>Short Description <i class="btn pull-right glyphicon glyphicon-sort-by-alphabet"
-                                         ng-click="sortEventTable('short_desc');"></i></th>
+                                         ng-click="sortDestTable('short_desc');"></i></th>
+                <th>Cost <i class="btn pull-right glyphicon glyphicon-sort"
+                            ng-click="sortDestTable('cost');"></i></th>
                 <th>&nbsp
                     <a class="btn btn-success" href="#edit-event-panel"
                        data-toggle="tab" ng-click="editEvent(buildEmptyEvent());">
@@ -14,7 +16,10 @@
 
             <tr ng-repeat="destination in destinations">
                 <td>{{destination.detail.name}}</td>
-                <td class='hideOverflow'>{{destination.detail.shortDesc}}</td>
+                <td class='hideOverflow'>
+                    {{destination.detail.shortDesc | limitTo : 60}}{{destination.detail.shortDesc.length > 60 ? '...' : ''}}
+                </td>
+                <td class="money">{{getCostName(event.detail.cost);}}</td>
                 <td>
                             <span class="btn-toolbar">
                                 <a class="btn btn-primary" href="#edit-event-panel" data-toggle="tab"

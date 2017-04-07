@@ -93,7 +93,7 @@ $app->get('/api/getDestinations', function ($request, $response, $args) {
         $query = "SELECT "
             . '`d`.id, `d`.name, `d`.short_desc, `d`.long_desc, `d`.thumb_url, `d`.image_url, `d`.phone, '
             . '`dest`.`latitude`, `dest`.`longitude`, '
-            . '`a`.`address_line_one`, `a`.`address_line_two`, `a`.`postal_code`,`a`.`city` '
+            . '`a`.`id` as `address_id`, `a`.`address_line_one`, `a`.`address_line_two`, `a`.`postal_code`,`a`.`city` '
             . 'FROM destination as `dest` '
             . 'LEFT JOIN `detail` as `d` ON `dest`.`detail_id`=`d`.`id` '
             . 'LEFT JOIN `address` as `a` ON `a`.`id`=`dest`.`address_id` ';

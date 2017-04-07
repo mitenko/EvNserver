@@ -11,6 +11,8 @@
                             ng-click="sortEventTable('name');"></i></th>
                 <th>Short Description <i class="btn pull-right glyphicon glyphicon-sort-by-alphabet"
                                          ng-click="sortEventTable('short_desc');"></i></th>
+                <th>Cost <i class="btn pull-right glyphicon glyphicon-sort"
+                            ng-click="sortEventTable('cost');"></i></th>
                 <th>&nbsp
                     <a class="btn btn-success" href="#edit-event-panel"
                        data-toggle="tab" ng-click="editEvent(buildEmptyEvent());">
@@ -22,7 +24,9 @@
                        ng-class="getPriorityClass(event.priority);" href>{{getPriorityName(event.priority);}}</a></td>
                 <td>{{event.readableStartTime}}</td>
                 <td>{{event.detail.name}}</td>
-                <td class='hideOverflow'>{{event.detail.shortDesc}}</td>
+                <td class='hideOverflow'>
+                    {{event.detail.shortDesc | limitTo : 30}}{{event.detail.shortDesc.length > 30 ? '...' : ''}}</td>
+                <td class="money">{{getCostName(event.detail.cost);}}</td>
                 <td>
                             <span class="btn-toolbar">
                                 <a class="btn btn-primary" href="#edit-event-panel" data-toggle="tab"
@@ -30,7 +34,7 @@
                                     <i class="glyphicon glyphicon-pencil"></i>
                                 </a>
                                 <a class="btn btn-warning" data-toggle="modal"
-                                   data-target="#confirmDeleteEvent" ng-click="confirmDelete(event);">
+                                   data-target="#confirmDeleteEvent" ng-click="confirmDeleteEvent(event);">
                                     <i class="glyphicon glyphicon-trash"></i>
                                 </a>
                             </span>

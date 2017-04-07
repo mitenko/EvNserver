@@ -65,12 +65,27 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
     };
 
     /**
+     * Returns an empty address
+     * @returns {*}
+     */
+    $scope.buildEmptyAddress= function () {
+        var emptyAddress = {
+            id: '',
+            lineOne: '',
+            lineTwo: '',
+            postalCode: '',
+            city: ''
+        };
+        return emptyAddress;
+    };
+
+    /**
      * Returns an empty event
      * @param $eventPriority
      * @returns {*}
      */
     $scope.buildEmptyEvent = function () {
-        var emptyDetail = $scope.buildEmptyDetail()
+        var emptyDetail = $scope.buildEmptyDetail();
         var emptyEvent = {
             id: '',
             detail: emptyDetail,
@@ -82,6 +97,24 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
             destinations: []
         };
         return emptyEvent;
+    };
+
+    /**
+     * Returns an empty event
+     * @param $eventPriority
+     * @returns {*}
+     */
+    $scope.buildEmptyDestination = function () {
+        var emptyDetail = $scope.buildEmptyDetail();
+        var emptyAddress = $scope.buildEmptyAddress();
+        var emptyDestination = {
+            id: '',
+            detail: emptyDetail,
+            address: emptyAddress,
+            longitude: '',
+            latitude: '',
+        };
+        return emptyDestination;
     };
 
     /**
@@ -104,6 +137,18 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
     $scope.getPriorityName = function ($eventPriority) {
         if ($scope.priorityData.length > $eventPriority && $eventPriority >= 0) {
             return $scope.priorityData[$eventPriority].text;
+        }
+        return '';
+    };
+
+    /**
+     * Returns the cost as readable test
+     * @param $eventPriority
+     * @returns {*}
+     */
+    $scope.getCostName = function (cost) {
+        if ($scope.costData.length > cost && cost >= 0) {
+            return $scope.costData[cost].text;
         }
         return '';
     };
@@ -152,7 +197,6 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
         $http.get('/adminApi/getEvents',
             {params: {'sorton': sorton, 'sortdir': sortdir}})
             .then(function (response) {
-                console.log(response);
                 $scope.events = response.data.data;
             });
     };
@@ -160,9 +204,11 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
     /**
      * Sets the list of destinations
      */
-    $scope.getDestinations = function () {
-        $http.get('/adminApi/getDestinations')
+    $scope.getDestinations = function (sorton, sortdir) {
+        $http.get('/adminApi/getDestinations',
+            {params: {'sorton': sorton, 'sortdir': sortdir}})
             .then(function (response) {
+                console.log(response);
                 $scope.destinations = response.data.data;
             });
     };
@@ -178,6 +224,6 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
     };
 
     $scope.getEvents('priority', 'ASC');
-    $scope.getDestinations();
+    $scope.getDestinations('name', 'ASC');
     $scope.getCategoryData();
 });

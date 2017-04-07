@@ -22,12 +22,12 @@ evnApp.controller('EvntTblCtrl', function EvntTblCtrl($scope, $http) {
     /**
      * Opens up the confirm delete modal
      */
-    $scope.confirmDelete = function(event) {
+    $scope.confirmDeleteEvent = function(event) {
         $scope.deleteEvent = event;
     };
 
     /**
-     * Opens up the confirm delete modal
+     * Deletes the event on confirmation
      */
     $scope.onConfirmDeleteEvent = function(eventId) {
         console.log('Deleting ' + eventId);

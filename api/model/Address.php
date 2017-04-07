@@ -5,20 +5,25 @@ namespace Evn\model;
  * Represents a Database details row 
  */
 class Address {
+    /**
+     * the address id
+     */
+    public $id;
+
 	/**
 	 * First line in the address
 	 */
-	public $line_one;
+	public $lineOne;
 	
 	/**
 	 * Second line in the address
 	 */
-	public $line_two;
+	public $lineTwo;
 	
 	/**
 	 * The Postal Code
 	 */
-	public $postal_code;
+	public $postalCode;
 	
 	/**
 	 * The city

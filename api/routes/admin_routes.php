@@ -20,7 +20,7 @@ $app->get('/adminApi/getEvents', function ($request, $response, $args) {
     if ($sortOn && $sortDir) {
         // Validate the unbindable values
         if (!preg_match('/(ASC)|(DESC)/', $sortDir)
-            || !preg_match('/(priority)|(name)|(start_time)|(short_desc)/', $sortOn)) {
+            || !preg_match('/(priority)|(name)|(start_time)|(short_desc)|(cost)/', $sortOn)) {
             throw new Exception('Invalid Parameters');
         }
         $query .= "ORDER BY `$sortOn` $sortDir";
@@ -55,18 +55,25 @@ $app->get('/adminApi/getEvents', function ($request, $response, $args) {
  */
 $app->get('/adminApi/getDestinations', function ($request, $response, $args) {
     $db = new \Evn\classes\Database;
-    $params = $request->getQueryParams();
-    $categories = $request->getQueryParam('category');
-    $activities = $request->getQueryParam('activity');
-
+    $sortOn = $request->getQueryParam('sorton');
+    $sortDir = $request->getQueryParam('sortdir');
 
     $query = "SELECT "
         . '`d`.id, `d`.name, `d`.short_desc, `d`.long_desc, `d`.thumb_url, `d`.image_url, `d`.phone, '
         . '`dest`.`latitude`, `dest`.`longitude`, '
-        . '`a`.`address_line_one`, `a`.`address_line_two`, `a`.`postal_code`,`a`.`city` '
+        . '`a`.`id` as `address_id`, `a`.`address_line_one`, `a`.`address_line_two`, `a`.`postal_code`,`a`.`city` '
         . 'FROM destination as `dest` '
         . 'LEFT JOIN `detail` as `d` ON `dest`.`detail_id`=`d`.`id` '
         . 'LEFT JOIN `address` as `a` ON `a`.`id`=`dest`.`address_id` ';
+
+    if ($sortOn && $sortDir) {
+        // Validate the unbindable values
+        if (!preg_match('/(ASC)|(DESC)/', $sortDir)
+            || !preg_match('/(priority)|(name)|(start_time)|(short_desc)|(cost)/', $sortOn)) {
+            throw new Exception('Invalid Parameters');
+        }
+        $query .= "ORDER BY `$sortOn` $sortDir";
+    }
 
     $stmt = $db->prepare($query);
     $stmt->execute();

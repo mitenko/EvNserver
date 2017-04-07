@@ -17,12 +17,10 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
     </ul>
 
     <div class="tab-content" ng-controller="RootCtrl">
-
         <?php
             require __PAGES__ . 'inc/events.php';
             require __PAGES__ . 'inc/destinations.php';
         ?>
-
     </div>
 </div>
 </body>

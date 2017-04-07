@@ -36,9 +36,10 @@ class Destination {
 
         // And the address
         $address = new \Evn\model\Address();
-        $address->line_one = $row['address_line_one'];
-        $address->line_two = $row['address_line_two'];
-        $address->postal_code = $row['postal_code'];
+        $address->id = $row['address_id'];
+        $address->lineOne = $row['address_line_one'];
+        $address->lineTwo = $row['address_line_two'];
+        $address->postalCode = $row['postal_code'];
         $address->city = $row['city'];
 
         $this->address = $address;
