@@ -49,5 +49,31 @@ evnApp.controller('DestTblCtrl', function DestTblCtrl($scope, $http) {
         $scope.$parent.getDestinations(
             $scope.sortState.field, $scope.sortState.direction);
     };
+});
+
+/**
+ * Edit Destination Controller
+ */
+evnApp.controller('EditDestCtrl', function EditDestCtrl(
+    $scope, $http) {
+    /**
+     * Initializations
+     */
+    $scope.uploadImage = '';
+    $scope.dest = $scope.$parent.buildEmptyDestination();
+    $scope.state = {
+        hasImage: false,
+    };
+    $scope.selectedCategory = {};
+    $scope.selectedActivity = {};
+
+    /**
+     * Called when the Destination is set
+     */
+    $scope.$on('destinationSelect', function(event, selectedDest) {
+        $scope.dest = selectedDest;
+        $scope.backupDest = jQuery.extend(true, {}, selectedDest);
+        $scope.state.hasImage = ($scope.dest.detail.imageURL);
+    });
 
 });
