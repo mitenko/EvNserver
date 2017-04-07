@@ -1,7 +1,8 @@
 /**
  * Created by David on 2017-03-25.
  */
-var evnApp = angular.module('evnApp', ['ngResource','ui.bootstrap','file-model']);
+var evnApp = angular.module('evnApp',
+    ['ngResource','ui.bootstrap','file-model', 'ngMap']);
 
 /**
  * Custom Filter

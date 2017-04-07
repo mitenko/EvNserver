@@ -168,8 +168,31 @@
                 </span>
             </div>
 
+            <!-- Cost -->
+            <div class="row">
+                <div class="form-group col-md-6 col-md-offset-3">
+                    <a class="btn btn-primary" ng-click="getLocationFromAddress();">
+                        <span class="glyphicon glyphicon-map-marker"></span> Get Location Using Address</a>
+
+                </div>
+            </div>
+
+            <!-- Destination Map -->
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <div map-lazy-load="https://maps.google.com/maps/api/js"
+                       map-lazy-load-params="{{googleMapsUrl}}" >
+                        <ng-map default-style="true"
+                                center="{{dest.latitude}},{{dest.longitude}}"
+                                zoom="15">
+                            <marker position="{{dest.latitude}},{{dest.longitude}}" title="hello"></marker>
+                        </ng-map>
+                    </div>
+                </div>
+            </div>
+
             <!-- Latitude and Longitude -->
-            <div class="row"><hr>
+            <div class="row">
                 <div class="form-group col-md-6">
                     <label for="latitude">Latitude</label>
                     <input type="text" class="form-control"

@@ -55,10 +55,11 @@ evnApp.controller('DestTblCtrl', function DestTblCtrl($scope, $http) {
  * Edit Destination Controller
  */
 evnApp.controller('EditDestCtrl', function EditDestCtrl(
-    $scope, $http) {
+    $scope, $http, NgMap, $timeout) {
     /**
      * Initializations
      */
+    $scope.googleMapsUrl = "https://maps.google.com/maps/api/js?key=AIzaSyCDL0vv7gI6sH4Upl8xkrcow6jygDa0aK";
     $scope.uploadImage = '';
     $scope.dest = $scope.$parent.buildEmptyDestination();
     $scope.state = {
@@ -74,6 +75,26 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
         $scope.dest = selectedDest;
         $scope.backupDest = jQuery.extend(true, {}, selectedDest);
         $scope.state.hasImage = ($scope.dest.detail.imageURL);
+
+        // Resize map
+        // See https://github.com/allenhwkim/angularjs-google-maps/issues/471
+        $timeout(function() {
+            NgMap.getMap().then(function(map) {
+                var center = map.getCenter();
+                google.maps.event.trigger(map, 'resize');
+                map.setCenter(center);
+            });
+        }, 500);
     });
+
+    /**
+     * Button Events
+     */
+    /**
+     * Restore with the backup
+     */
+    $scope.getLocationFromAddress = function() {
+
+    }
 
 });
