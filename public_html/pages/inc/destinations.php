@@ -185,7 +185,7 @@
                         <ng-map default-style="true"
                                 center="{{dest.latitude}},{{dest.longitude}}"
                                 zoom="15">
-                            <marker position="{{dest.latitude}},{{dest.longitude}}" title="hello"></marker>
+                            <marker position="{{dest.latitude}},{{dest.longitude}}" title="{{dest.detail.name}}"></marker>
                         </ng-map>
                     </div>
                 </div>

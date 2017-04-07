@@ -185,8 +185,18 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
             // now post to /adminApi/updateImage
             console.log(response);
         });
-
     };
+
+    $scope.getAddressComponent = function (addressComponents, componentType) {
+        for (var i = 0; i < addressComponents.length; i++) {
+            var component = addressComponents[i];
+            for (var j = 0; j < component['types'].length; j++) {
+                if (component['types'][j]==componentType) {
+                    return component.long_name;
+                }
+            }
+        }
+    }
 
     /**
      * HTTP calls

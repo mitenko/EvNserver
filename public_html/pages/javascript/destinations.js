@@ -91,10 +91,45 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
      * Button Events
      */
     /**
-     * Restore with the backup
+     * Determine the Destination lat / lng from address
      */
     $scope.getLocationFromAddress = function() {
+        var fullAddress =
+            $scope.dest.address.lineOne
+            + ' ' + $scope.dest.address.lineTwo
+            + ' ' + $scope.dest.address.city
+            + ' ' + $scope.dest.address.postalCode;
 
-    }
+        var geocoder = new google.maps.Geocoder();
+        geocoder.geocode(
+            { 'address': fullAddress},
+            function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    console.log(results);
+                    var addressComponents = results[0].address_components;
+                    $scope.dest.address.lineOne =
+                        $scope.$parent.getAddressComponent(
+                            addressComponents, 'street_number')
+                        + ' ' +
+                        $scope.$parent.getAddressComponent(
+                            addressComponents, 'route');
 
+                    $scope.dest.address.postalCode =
+                        $scope.$parent.getAddressComponent(
+                            addressComponents, 'postal_code');
+                    $scope.dest.address.city =
+                        $scope.$parent.getAddressComponent(
+                            addressComponents, 'locality');
+
+                    var geometry = results[0].geometry;
+                    NgMap.getMap().then(function(map) {
+                        map.setCenter(results[0].geometry.location);
+                    });
+                    $scope.dest.latitude = geometry.location.lat();
+                    $scope.dest.longitude = geometry.location.lng();
+                } else {
+                    alert('Geocode was not successful for the following reason: ' + status);
+                }
+            });
+    };
 });
