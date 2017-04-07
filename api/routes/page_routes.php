@@ -8,24 +8,12 @@
 /**
  * CSS and Javascript routes
  */
-$app->get('/css/bootstrap', function ($request, $response, $args) {
-    return $this->view->render($response, 'css/supernice.css', array());
+$app->get('/css/{file}', function ($request, $response, $args) {
+    return $this->view->render($response, 'css/' .  $args['file'], array());
 });
 
-$app->get('/css/evn', function ($request, $response, $args) {
-    return $this->view->render($response, 'css/evn.css', array());
-});
-
-$app->get('/javascript/main.js', function ($request, $response, $args) {
-    return $this->view->render($response, 'javascript/main.js', array());
-});
-
-$app->get('/javascript/ui-bootstrap.js', function ($request, $response, $args) {
-    return $this->view->render($response, 'javascript/ui-bootstrap-tpls-2.5.0.js', array());
-});
-
-$app->get('/javascript/angular-file-model.js', function ($request, $response, $args) {
-    return $this->view->render($response, 'javascript/angular-file-model.js', array());
+$app->get('/javascript/{file}', function ($request, $response, $args) {
+    return $this->view->render($response, 'javascript/' . $args['file'], array());
 });
 
 /**
