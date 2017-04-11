@@ -14,12 +14,14 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
     <ul class="nav nav-tabs">
         <li class="active"><a href="#events-panel" data-toggle="tab" class="h3" >Events</a></li>
         <li><a href="#destination-panel" data-toggle="tab" class="h3" >Destinations</a></li>
+        <li><a href="#activity-panel" data-toggle="tab" class="h3" >Activities</a></li>
     </ul>
 
     <div class="tab-content" ng-controller="RootCtrl">
         <?php
             require __PAGES__ . 'inc/events.php';
             require __PAGES__ . 'inc/destinations.php';
+            require __PAGES__ . 'inc/activities.php';
         ?>
     </div>
 </div>

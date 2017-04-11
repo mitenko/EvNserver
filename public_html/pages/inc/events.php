@@ -219,12 +219,14 @@
                             Select a Destination
                         </div>
                         <div class="modal-body">
-                            <a class="btn btn-success"
+                            <div class="btn-toolbar">
+                            <a class="btn btn-success flow-btn"
                                ng-repeat='destination in destinations | notInArray:event.destinations:"id"'
                                ng-click="addDestToEvent(destination.id);">
                                 {{getDestinationName(destination.id)}}
                                 <span class="glyphicon glyphicon-plus"
-                                      data-toggle="modal" data-target="#destinationSelect"></span></a><br>
+                                      data-toggle="modal" data-target="#destinationSelect"></span></a>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <a type="button" class="btn btn-primary" data-dismiss="modal">Close</a>
