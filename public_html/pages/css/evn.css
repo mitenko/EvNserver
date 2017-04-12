@@ -17,3 +17,7 @@
 .money{
     font-weight: bolder;
 }
+
+.modal-vertical-center {
+    left: 0% !important;
+}

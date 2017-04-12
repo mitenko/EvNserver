@@ -119,6 +119,18 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
     };
 
     /**
+     * Returns an empty Activity
+     */
+    $scope.buildEmptyActivity = function () {
+        var emptyActivity = {
+            id: -1,
+            name: '',
+            category: '',
+        };
+        return emptyActivity;
+    };
+
+    /**
      * Returns the css class for the event priority
      * @param $eventPriority
      * @returns {*}

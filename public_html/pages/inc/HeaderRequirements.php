@@ -28,3 +28,4 @@
 <script src="/javascript/main.js"></script>
 <script src="/javascript/events.js"></script>
 <script src="/javascript/destinations.js"></script>
+<script src="/javascript/activities.js"></script>

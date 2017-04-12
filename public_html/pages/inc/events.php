@@ -70,11 +70,11 @@
     <div class="panel panel-default col-md-6 col-md-offset-3"><br>
         <form name="eventEditForm">
             <div class="row">
-                        <span class="col-md-9 form-group">
-                            <label for="name">Name</label>
-                            <input type="text" class="form-control input-lg" ng-required="true"
-                                   id="name" ng-model='event.detail.name' placeholder="Event Title">
-                        </span>
+                <span class="col-md-9 form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control input-lg" ng-required="true"
+                           id="name" ng-model='event.detail.name' placeholder="Event Title">
+                </span>
 
                 <span class="col-md-3 form-group">
                             <div class="dropdown">

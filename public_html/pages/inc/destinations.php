@@ -1,3 +1,4 @@
+<!-- The Destination Table -->
 <div id="destination-panel" class="tab-pane fade" ng-controller="DestTblCtrl">
     <div class="panel panel-default">
         <table class="table table-bordered">

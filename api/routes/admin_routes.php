@@ -414,7 +414,6 @@ $app->post('/adminApi/addDest', function ($request, $response, $args) {
         ));
 });
 
-
 /**
  * Deletes a destination and all associated data from the database
  */
