@@ -78,11 +78,16 @@
                 <div class="modal-footer btn-toolbar">
                     <a class="btn btn-success" ng-click="onSaveActivity();">
                         <span class="glyphicon glyphicon-cloud-upload"></span> Save</a>
-                    <a class="btn btn-danger"
+                    <a class="btn btn-warning"
                        data-toggle="modal"
                        data-target="#editActivityModal"
                        ng-click="onCancelEditActivity();">
                         <span class="glyphicon glyphicon-remove"></span> Cancel</a>
+                    <a class="btn btn-danger"
+                       data-toggle="modal"
+                       data-target="#confirmDeleteActivity"
+                       ng-click="confirmDeleteActivity();">
+                        <span class="glyphicon glyphicon-trash"></span> Delete</a>
                 </div>
             </div>
         </div>
@@ -100,6 +105,26 @@
                 </div>
                 <div class="modal-footer">
                     <a type="button" class="btn btn-primary" data-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div id="confirmDeleteActivity" class="modal fade" role="dialog">
+        <div class="modal-sm centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header form-group">
+                    Confirm Delete
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete the activity <b>{{deleteActivity.name}}</b>?
+                </div>
+                <div class="modal-footer btn-toolbar">
+                    <a type="button" class="btn btn-danger"
+                       data-dismiss="modal" ng-click="onConfirmDeleteActivity();">
+                        <span class="glyphicon glyphicon-trash"></span> Delete</a>
+                    <a type="button" class="btn btn-warning" data-dismiss="modal">Cancel</a>
                 </div>
             </div>
         </div>

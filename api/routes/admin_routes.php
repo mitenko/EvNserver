@@ -475,3 +475,89 @@ $app->post('/adminApi/deleteDest', function ($request, $response, $args) {
 
     return $response;
 });
+
+/**
+ * Updates an activity
+ */
+$app->post('/adminApi/updateActivity', function ($request, $response, $args) {
+    $db = new \Evn\classes\Database;
+    $activityId = $request->getParsedBody()['activityId'];
+    $activityName = $request->getParsedBody()['activityName'];
+    $categoryIds = $request->getParsedBody()['categoryIds'];
+
+    // Update the activity table
+    $query = 'UPDATE `activity` SET `name`=:activityName WHERE `id`=:activityId';
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':activityId', $activityId, \PDO::PARAM_INT);
+    $stmt->bindParam(':activityName', $activityName, \PDO::PARAM_STR);
+    $stmt->execute();
+
+    // Update the category activity map
+    $query = 'DELETE FROM `category_activity_map` WHERE `activity_id`=:activityId';
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':activityId', $activityId, \PDO::PARAM_INT);
+    $stmt->execute();
+    foreach($categoryIds as $categoryId) {
+        $query = 'INSERT INTO `category_activity_map` (`category_id`,`activity_id`) '
+            . ' VALUES (:categoryId, :activityId)';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':activityId', $activityId, \PDO::PARAM_INT);
+        $stmt->bindParam(':categoryId', $categoryId, \PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    return $response;
+});
+
+/**
+ * Adds an activity
+ */
+$app->post('/adminApi/addActivity', function ($request, $response, $args) {
+    $db = new \Evn\classes\Database;
+    $activityName = $request->getParsedBody()['activityName'];
+    $categoryIds = $request->getParsedBody()['categoryIds'];
+
+    // Insert into the activity table
+    $query = 'INSERT into `activity` (`name`) VALUES (:activityName)';
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':activityName', $activityName, \PDO::PARAM_STR);
+    $stmt->execute();
+
+    $activityId = $db->getLastInsertId();
+
+    // Insert into the category activity map
+    foreach($categoryIds as $categoryId) {
+        $query = 'INSERT INTO `category_activity_map` (`category_id`,`activity_id`) '
+            . ' VALUES (:categoryId, :activityId)';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':activityId', $activityId, \PDO::PARAM_INT);
+        $stmt->bindParam(':categoryId', $categoryId, \PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    return $response;
+});
+
+/**
+ * Deletes an activity
+ */
+$app->post('/adminApi/deleteActivity', function ($request, $response, $args) {
+    $db = new \Evn\classes\Database;
+    $activityId = $request->getParsedBody()['activityId'];
+
+    if (!$activityId) {
+        throw new Exception('Expected activity data');
+    }
+
+    // Delete from the activity table
+    $query = 'DELETE FROM `activity` WHERE `id`=:activityId';
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':activityId', $activityId, \PDO::PARAM_INT);
+    $stmt->execute();
+
+    // Delete from the category activity map
+    $query = 'DELETE FROM `category_activity_map` WHERE `activity_id`=:activityId';
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':activityId', $activityId, \PDO::PARAM_INT);
+    $stmt->execute();
+});

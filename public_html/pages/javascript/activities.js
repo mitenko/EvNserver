@@ -22,6 +22,7 @@ evnApp.controller('ActvTblCtrl', function ActvTblCtrl($scope, $http) {
             $('#incompleteActivityModal').modal('show');
             return;
         }
+        $('#editActivityModal').modal('hide');
 
         var activityId = $scope.selectedActivity.id;
         var activityName = $scope.selectedActivity.name;
@@ -32,11 +33,19 @@ evnApp.controller('ActvTblCtrl', function ActvTblCtrl($scope, $http) {
 
         if (activityId == -1) {
             // New Activity, Add it
+            // Update the Activity
+            $http.post('/adminApi/addActivity',
+                {'activityName': activityName,
+                 'categoryIds': associatedCategoryIds})
+                .then(function(response) {
+                    console.log(response);
+                    $scope.$parent.getCategoryData();
+                });
         } else {
             // Update the Activity
             $http.post('/adminApi/updateActivity',
-                {'id': activityId,
-                'name': activityName,
+                {'activityId': activityId,
+                'activityName': activityName,
                 'categoryIds': associatedCategoryIds})
                 .then(function(response) {
                     $scope.$parent.getCategoryData();
@@ -49,6 +58,26 @@ evnApp.controller('ActvTblCtrl', function ActvTblCtrl($scope, $http) {
      */
     $scope.onCancelEditActivity = function() {
         $scope.$parent.getCategoryData();
+    };
+
+    /**
+     * Called when the user first presses the confirm delete button
+     */
+    $scope.confirmDeleteActivity = function() {
+        $scope.deleteActivity = $scope.selectedActivity;
+    };
+
+    /**
+     * Called when the user confirms the delete
+     */
+    $scope.onConfirmDeleteActivity = function() {
+        $('#editActivityModal').modal('hide');
+        var activityId = $scope.deleteActivity.id;
+        $http.post('/adminApi/deleteActivity',
+            {'activityId': activityId})
+            .then(function(response) {
+                $scope.$parent.getCategoryData();
+            });
     };
 
     /**
