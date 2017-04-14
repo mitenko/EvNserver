@@ -102,7 +102,8 @@
                                 <span class="btn btn-primary btn-file">
                                     <span class="fileinput-new">Add Image</span>
                                     <span class="fileinput-exists">Change</span>
-                                    <input type="file" name="file" file-model="uploadImage">
+                                    <input type="file" name="file"
+                                           file-model="uploadImage">
                                 </span>
                         <a href="#" class="btn btn-danger fileinput-exists" data-dismiss="fileinput">Remove</a>
                     </div>
@@ -293,6 +294,23 @@
                         </div>
                         <div class="modal-footer">
                             <a type="button" class="btn btn-primary" data-dismiss="modal">Close</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Invalid Image Size Modal -->
+            <div id="invalidEventImageModal" class="modal fade" role="dialog">
+                <div class="modal-sm centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            Invalid Image Dimensions
+                        </div>
+                        <div class="modal-body">
+                            The max width for images is 1024 px. Please resize your image.
+                        </div>
+                        <div class="modal-footer">
+                            <a type="button" class="btn btn-primary" data-dismiss="modal">Okay</a>
                         </div>
                     </div>
                 </div>

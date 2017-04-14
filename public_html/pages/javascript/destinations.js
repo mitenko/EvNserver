@@ -190,6 +190,24 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
                 });
         }
     };
+
+    /**
+     * Image Events
+     */
+    /**
+     * Validate the Image Dimensions
+     */
+    $('.fileinput').fileinput().on('change.bs.fileinput', function(event, file) {
+        var image = new Image();
+        image.onload = function() {
+            if (this.width > 1024) {
+                $('#invalidDestImageModal').modal('show');
+                $('.fileinput').fileinput('reset');
+            }
+        };
+        image.src = file.result;
+    });
+
     /**
      * Destination Activity Methods
      */

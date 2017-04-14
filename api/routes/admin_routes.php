@@ -283,8 +283,8 @@ $app->post('/adminApi/updateImage', function ($request, $response, $args) {
         throw new Exception('Invalid Detail Id');
     }
 
-    // Move the new image
     $newfile = $files['uploadImage'];
+    // Move the new image
     $pathParts = pathinfo($newfile->getClientFilename());
     $newfileName = randomString(32) . "." . $pathParts['extension'];
     $targetPath = __IMGDIR__  . $newfileName;

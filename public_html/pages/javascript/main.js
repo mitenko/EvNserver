@@ -199,6 +199,12 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
         });
     };
 
+    /**
+     * Get's the Address Component
+     * @param addressComponents
+     * @param componentType
+     * @returns {*}
+     */
     $scope.getAddressComponent = function (addressComponents, componentType) {
         for (var i = 0; i < addressComponents.length; i++) {
             var component = addressComponents[i];
