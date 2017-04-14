@@ -75,9 +75,11 @@
 
             <!-- Image Upload -->
             <div class="form-group">
-                <div class="fileinput " ng-class="state.hasImage? 'fileinput-exists' : 'fileinput-new'"
+                <div class="fileinput " id="destFileInput"
+                     ng-class="state.hasImage? 'fileinput-exists' : 'fileinput-new'"
                      data-provides="fileinput" ng-model="newImage">
-                    <div class="fileinput-preview fileinput-exists thumbnail" data-trigger="fileinput">
+                    <div class="fileinput-preview fileinput-exists thumbnail"
+                         data-trigger="fileinput">
                         <img src="{{dest.detail.imageURL}}" alt="...">
                     </div>
                     <div class="fileinput-new thumbnail" data-trigger="fileinput">
@@ -264,23 +266,6 @@
                         </div>
                         <div class="modal-footer">
                             <a type="button" class="btn btn-primary" data-dismiss="modal">Close</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Invalid Image Size Modal -->
-            <div id="invalidDestImageModal" class="modal fade" role="dialog">
-                <div class="modal-sm centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            Invalid Image Dimensions
-                        </div>
-                        <div class="modal-body">
-                            The max width for images is 1024 px. Please resize your image.
-                        </div>
-                        <div class="modal-footer">
-                            <a type="button" class="btn btn-primary" data-dismiss="modal">Okay</a>
                         </div>
                     </div>
                 </div>

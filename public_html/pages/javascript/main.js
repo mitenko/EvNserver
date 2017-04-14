@@ -186,6 +186,7 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
      */
     $scope.uploadImageToServer = function (id, imageData) {
         var formData = new FormData();
+        console.log('Uploading Image to Server...');
         console.log('detail:' + id);
         formData.append('detailId', id);
         formData.append('uploadImage', imageData);
@@ -214,7 +215,7 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
                 }
             }
         }
-    }
+    };
 
     /**
      * HTTP calls

@@ -201,8 +201,8 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
         var image = new Image();
         image.onload = function() {
             if (this.width > 1024) {
-                $('#invalidDestImageModal').modal('show');
-                $('.fileinput').fileinput('reset');
+                $('#invalidImageModal').modal('show');
+                $('#destFileinput').fileinput('reset');
             }
         };
         image.src = file.result;

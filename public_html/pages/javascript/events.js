@@ -89,13 +89,18 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
      * Called when the Event is set
      */
     $scope.$on('eventSelect', function(event, selectedEvent) {
+        $scope.uploadImage = null;
+
         $scope.event = selectedEvent;
         $scope.backupEvent = jQuery.extend(true, {}, selectedEvent);
         $scope.startDate = new Date(selectedEvent.unixStartTime * 1000);
         $scope.endDate = new Date(selectedEvent.unixEndTime * 1000);
         $scope.priorityCssClass = $scope.$parent.getPriorityClass(selectedEvent.priority);
         $scope.state.hasImage = ($scope.event.detail.imageURL);
-        if (!$scope.state.hasImage) {
+
+        if ($scope.state.hasImage) {
+            $('.fileinput').fileinput('reset');
+        } else {
             $('.fileinput').fileinput('clear');
         }
     });
@@ -135,6 +140,7 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
 
         console.log('Saving Event');
         console.log($scope.event);
+        console.log($scope.uploadImage);
         $scope.event.readableStartTime =
             $filter('date')(new Date($scope.startDate), $scope.readableDateFormat);
         var detailId = $scope.event.detail.id;
@@ -175,11 +181,12 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
         var image = new Image();
         image.onload = function() {
             if (this.width > 1024) {
-                $('#invalidEventImageModal').modal('show');
-                $('.fileinput').fileinput('reset');
+                $('#invalidImageModal').modal('show');
+                $('#eventFileInput').fileinput('clear');
             }
         };
         image.src = file.result;
+        $scope.uploadImage = file;
     });
 
     /**

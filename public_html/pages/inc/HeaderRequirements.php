@@ -16,7 +16,7 @@
 
 <!-- For the Image uploader -->
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.3/css/jasny-bootstrap.min.css">
-<script src="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.3/js/jasny-bootstrap.min.js"></script>
+<script src="/javascript/jasny-bootstrap.min.js"></script>
 <script src="/javascript/angular-file-model.js"></script>
 <script src="/javascript/ui-bootstrap-tpls-2.5.0.js"></script>
 
