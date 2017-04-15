@@ -14,14 +14,8 @@
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular-resource.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular-route.js"></script>
 
-<!-- For the Image uploader -->
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.3/css/jasny-bootstrap.min.css">
-<script src="/javascript/jasny-bootstrap.min.js"></script>
-<script src="/javascript/angular-file-model.js"></script>
-<script src="/javascript/ui-bootstrap-tpls-2.5.0.js"></script>
-
 <!-- For the Angular Image Uploader -->
-<script src="/javascript/ng-file-upload.js"></script>
+<script src="/javascript/ng-file-upload.min.js"></script>
 
 <!-- For the Destination Map -->
 <script src="https://maps.google.com/maps/api/js?key=AIzaSyCDL0vv7gI6sH4Upl8xkrcow6jygDa0aKY"></script>

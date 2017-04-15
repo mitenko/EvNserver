@@ -63,7 +63,7 @@
 <div id="edit-dest-panel" class="tab-pane fade" ng-controller="EditDestCtrl">
     <br>
     <div class="panel panel-default col-md-6 col-md-offset-3"><br>
-        <form name="eventDestForm">
+        <form name="destEditForm">
             <!-- Destination Name -->
             <div class="row">
                 <span class="col-md-9 form-group">

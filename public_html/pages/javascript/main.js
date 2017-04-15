@@ -2,7 +2,7 @@
  * Created by David on 2017-03-25.
  */
 var evnApp = angular.module('evnApp',
-    ['ngResource','ui.bootstrap','file-model', 'ngMap', 'ngFileUpload']);
+    ['ngResource', 'ngMap', 'ngFileUpload']);
 
 /**
  * Custom Filter

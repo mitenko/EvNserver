@@ -153,7 +153,7 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
      * Send to the server!
      */
     $scope.onSaveDest = function() {
-        if (!$scope.eventDestForm.$valid
+        if (!$scope.destEditForm.$valid
             || $scope.dest.detail.activities.length == 0
             || $scope.uploadImage == $scope.$parent.imagePlaceholder) {
             $('#incompleteDestModal').modal('show');
@@ -201,9 +201,11 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
      * Validate the Image Dimensions
      */
     $scope.validateDestImage = function($files, $file) {
-        if($scope.eventEditForm.imageInput.$error.maxWidth) {
+        if($scope.destEditForm.imageInput.$error.maxWidth) {
             $scope.uploadImage = $scope.$parent.imagePlaceholder;
             $('#invalidImageModal').modal('show');
+        } else {
+            $scope.dest.detail.imageURL = $scope.uploadImage;
         }
     };
 

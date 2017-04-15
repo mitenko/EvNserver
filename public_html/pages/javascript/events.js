@@ -179,6 +179,8 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
         if($scope.eventEditForm.imageInput.$error.maxWidth) {
             $scope.uploadImage = $scope.$parent.imagePlaceholder;
             $('#invalidImageModal').modal('show');
+        } else {
+            $scope.dest.detail.imageURL = $scope.uploadImage;
         }
     };
 
