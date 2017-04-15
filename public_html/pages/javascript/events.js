@@ -69,7 +69,7 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
     /**
      * Initializations
      */
-    $scope.uploadImage = '';
+    $scope.uploadImage = $scope.$parent.imagePlaceholder;
     $scope.event = $scope.$parent.buildEmptyEvent();
     $scope.state = {
         startCalOpen: false,
@@ -89,7 +89,6 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
      * Called when the Event is set
      */
     $scope.$on('eventSelect', function(event, selectedEvent) {
-        $scope.uploadImage = null;
 
         $scope.event = selectedEvent;
         $scope.backupEvent = jQuery.extend(true, {}, selectedEvent);
@@ -97,11 +96,10 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
         $scope.endDate = new Date(selectedEvent.unixEndTime * 1000);
         $scope.priorityCssClass = $scope.$parent.getPriorityClass(selectedEvent.priority);
         $scope.state.hasImage = ($scope.event.detail.imageURL);
-
         if ($scope.state.hasImage) {
-            $('.fileinput').fileinput('reset');
+            $scope.uploadImage = $scope.event.detail.imageURL;
         } else {
-            $('.fileinput').fileinput('clear');
+            $scope.uploadImage = $scope.$parent.imagePlaceholder;
         }
     });
 
@@ -132,7 +130,7 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
     $scope.onSave = function() {
         if (!$scope.eventEditForm.$valid
             || $scope.event.detail.activities.length == 0
-            || !($scope.uploadImage || $scope.event.detail.imageURL)) {
+            || $scope.uploadImage == $scope.$parent.imagePlaceholder) {
             $('#incompleteEventModal').modal('show');
             return;
         }
@@ -177,17 +175,12 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
     /**
      * Validate the Image Dimensions
      */
-    $('.fileinput').fileinput().on('change.bs.fileinput', function(event, file) {
-        var image = new Image();
-        image.onload = function() {
-            if (this.width > 1024) {
-                $('#invalidImageModal').modal('show');
-                $('#eventFileInput').fileinput('clear');
-            }
-        };
-        image.src = file.result;
-        $scope.uploadImage = file;
-    });
+    $scope.validateEventImage = function($files, $file) {
+        if($scope.eventEditForm.imageInput.$error.maxWidth) {
+            $scope.uploadImage = $scope.$parent.imagePlaceholder;
+            $('#invalidImageModal').modal('show');
+        }
+    };
 
     /**
      * Calendar Picker

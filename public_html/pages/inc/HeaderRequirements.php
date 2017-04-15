@@ -20,6 +20,9 @@
 <script src="/javascript/angular-file-model.js"></script>
 <script src="/javascript/ui-bootstrap-tpls-2.5.0.js"></script>
 
+<!-- For the Angular Image Uploader -->
+<script src="/javascript/ng-file-upload.js"></script>
+
 <!-- For the Destination Map -->
 <script src="https://maps.google.com/maps/api/js?key=AIzaSyCDL0vv7gI6sH4Upl8xkrcow6jygDa0aKY"></script>
 <script src="/javascript/ng-map.min.js"></script>

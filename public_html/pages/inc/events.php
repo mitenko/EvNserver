@@ -90,24 +90,22 @@
             </div>
 
             <!-- Image Upload -->
-            <div class="form-group">
-                <div class="fileinput " id="eventFileInput"
-                     ng-class="state.hasImage? 'fileinput-exists' : 'fileinput-new'"
-                     data-provides="fileinput">
-                    <div id="existingImageContainer" class="fileinput-preview fileinput-exists thumbnail"
-                         data-trigger="fileinput">
-                        <img ng-src="event.detail.imageURL" alt="...">
-                    </div>
-                    <div class="fileinput-new thumbnail" data-trigger="fileinput">
-                        <img ng-src="https://eventsnanaimo.com/img/placeholder.png" alt="..."></div>
-                    <div class="text-center">
-                                <span class="btn btn-primary btn-file">
-                                    <span class="fileinput-new">Add Image</span>
-                                    <span class="fileinput-exists">Change</span>
-                                    <input type="file" name="file"
-                                           file-model="uploadImage">
-                                </span>
-                        <a href="#" class="btn btn-danger fileinput-exists" data-dismiss="fileinput">Remove</a>
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label>Primary Image</label><br>
+                    <div name="imageInput"
+                        ngf-select="" ngf-drop=""
+                        ng-model="uploadImage"
+                        ngf-multiple="false" ngf-accept="'image/*'"
+                        ngf-drop-available="dropSupported"
+                        ngf-max-width="{{maxImageWidth}}"
+                        ngf-change="validateEventImage($files, $file);">
+                        <img class="col-md-12 img-thumbnail" ngf-src="uploadImage"><br>
+                        <a type="button"
+                           class="btn btn-primary btn-lrg col-md-6 col-md-offset-3">
+                            Select <span ng-show="dropSupported">or Drag </span>Image Here&nbsp;
+                            <span class="glyphicon glyphicon-picture"></span>
+                        </a>
                     </div>
                 </div>
             </div>

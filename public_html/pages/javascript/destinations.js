@@ -85,6 +85,7 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
     };
     $scope.selectedCategory = {};
     $scope.selectedActivity = {};
+    $scope.uploadImage = $scope.$parent.imagePlaceholder;
 
     /**
      * Called when the Destination is set
@@ -93,8 +94,10 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
         $scope.dest = selectedDest;
         $scope.backupDest = jQuery.extend(true, {}, selectedDest);
         $scope.state.hasImage = ($scope.dest.detail.imageURL);
-        if (!$scope.state.hasImage) {
-            $('.fileinput').fileinput('clear');
+        if ($scope.state.hasImage) {
+            $scope.uploadImage = $scope.dest.detail.imageURL;
+        } else {
+            $scope.uploadImage = $scope.$parent.imagePlaceholder;
         }
 
         // Resize map
@@ -152,7 +155,7 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
     $scope.onSaveDest = function() {
         if (!$scope.eventDestForm.$valid
             || $scope.dest.detail.activities.length == 0
-            || !($scope.uploadImage || $scope.dest.detail.imageURL)) {
+            || $scope.uploadImage == $scope.$parent.imagePlaceholder) {
             $('#incompleteDestModal').modal('show');
             return;
         }
@@ -197,16 +200,12 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
     /**
      * Validate the Image Dimensions
      */
-    $('.fileinput').fileinput().on('change.bs.fileinput', function(event, file) {
-        var image = new Image();
-        image.onload = function() {
-            if (this.width > 1024) {
-                $('#invalidImageModal').modal('show');
-                $('#destFileinput').fileinput('reset');
-            }
-        };
-        image.src = file.result;
-    });
+    $scope.validateDestImage = function($files, $file) {
+        if($scope.eventEditForm.imageInput.$error.maxWidth) {
+            $scope.uploadImage = $scope.$parent.imagePlaceholder;
+            $('#invalidImageModal').modal('show');
+        }
+    };
 
     /**
      * Destination Activity Methods

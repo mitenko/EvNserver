@@ -2,7 +2,7 @@
  * Created by David on 2017-03-25.
  */
 var evnApp = angular.module('evnApp',
-    ['ngResource','ui.bootstrap','file-model', 'ngMap']);
+    ['ngResource','ui.bootstrap','file-model', 'ngMap', 'ngFileUpload']);
 
 /**
  * Custom Filter
@@ -42,6 +42,9 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
     costData[3] = {value: 3, text: '$$$'};
     costData[4] = {value: 3, text: '$$$$'};
     $scope.costData = costData;
+
+    $scope.maxImageWidth = 1024;
+    $scope.imagePlaceholder = 'https://eventsnanaimo.com/img/placeholder.png';
 
     /**
      * Root Functions
