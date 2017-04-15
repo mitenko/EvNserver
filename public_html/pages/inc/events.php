@@ -100,12 +100,55 @@
                         ngf-drop-available="dropSupported"
                         ngf-max-width="{{maxImageWidth}}"
                         ngf-change="validateEventImage($files, $file);">
-                        <img class="col-md-12 img-thumbnail" ngf-src="uploadImage"><br>
+                            <img class="col-md-12 img-thumbnail" ngf-src="uploadImage"><br>
                         <a type="button"
                            class="btn btn-primary btn-lrg col-md-6 col-md-offset-3">
                             Select <span ng-show="dropSupported">or Drag </span>Image Here&nbsp;
                             <span class="glyphicon glyphicon-picture"></span>
                         </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thumbnail -->
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label>Thumbnail</label><br>
+                    <img class="col-md-4 col-md-offset-4 img-thumbnail" ng-src="{{thumbnail}}" /><br>
+                    <a type="button"
+                       ng-click="initImageCrop();"
+                       data-toggle="modal" data-target="#thumbnailCropModal"
+                       class="btn btn-primary col-md-6 col-md-offset-3">
+                        Edit Thumbnail
+                        <span class="glyphicon glyphicon-edit"></span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Thumbnail Image Crop Modal -->
+            <div id="thumbnailCropModal" class="modal fade" role="dialog">
+                <div class="modal-dialog modal-vertical-center">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="cropArea">
+                                <img-crop
+                                    image="cropper.primaryImage"
+                                    result-image="cropper.croppedImage"
+                                    area-type="square"
+                                    result-image-size="200"
+                                ></img-crop>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="form-group text-center">
+                                <a class="btn btn-success"  data-dismiss="modal"
+                                   ng-click="onSaveImageCrop();">
+                                    <span class="glyphicon glyphicon-check"></span> Save</a>
+                                &nbsp;
+                                <a class="btn btn-danger" data-dismiss="modal">
+                                    <span class="glyphicon glyphicon-remove"></span> Cancel</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -70,6 +70,11 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
      * Initializations
      */
     $scope.uploadImage = $scope.$parent.imagePlaceholder;
+    $scope.thumbnail = $scope.$parent.imagePlaceholder;
+    $scope.cropper = {
+        primaryImage: null,
+        croppedImage: null
+    };
     $scope.event = $scope.$parent.buildEmptyEvent();
     $scope.state = {
         startCalOpen: false,
@@ -101,6 +106,10 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
         } else {
             $scope.uploadImage = $scope.$parent.imagePlaceholder;
         }
+        $scope.cropper = {
+            primaryImage: null,
+            croppedImage: null
+        };
     });
 
     /**
@@ -182,6 +191,20 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
         } else {
             $scope.dest.detail.imageURL = $scope.uploadImage;
         }
+    };
+
+    /**
+     * Initialize the image crop
+     */
+    $scope.initImageCrop = function() {
+        $scope.cropper.primaryImage = $scope.uploadImage;
+    };
+
+    /**
+     * Initialize the image crop
+     */
+    $scope.onSaveImageCrop = function() {
+        $scope.thumbnail = $scope.cropper.croppedImage;
     };
 
     /**

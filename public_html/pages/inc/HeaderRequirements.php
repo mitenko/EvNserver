@@ -17,6 +17,10 @@
 <!-- For the Angular Image Uploader -->
 <script src="/javascript/ng-file-upload.min.js"></script>
 
+<!-- For the Angular Image Cropper -->
+<script src="/javascript/ng-img-crop.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/ng-img-crop.css">
+
 <!-- For the Destination Map -->
 <script src="https://maps.google.com/maps/api/js?key=AIzaSyCDL0vv7gI6sH4Upl8xkrcow6jygDa0aKY"></script>
 <script src="/javascript/ng-map.min.js"></script>
