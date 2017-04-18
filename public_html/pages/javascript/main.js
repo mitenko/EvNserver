@@ -60,6 +60,7 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
             shortDesc: '',
             longDesc: '',
             imageURL: '',
+            thumbURL: '',
             phone: '',
             website: '',
             cost: 0,
@@ -187,12 +188,14 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
      * Uploads the image file for the given detail id
      * @returns {string}
      */
-    $scope.uploadImageToServer = function (id, imageData) {
+    $scope.uploadImagesToServer =
+            function (id, image, imageType) {
         var formData = new FormData();
         console.log('Uploading Image to Server...');
-        console.log('detail:' + id);
+        console.log(image);
         formData.append('detailId', id);
-        formData.append('uploadImage', imageData);
+        formData.append('imageType', imageType);
+        formData.append('image', image);
         $http.post('/adminApi/updateImage', formData, {
             transformRequest: angular.identity,
             headers: {'Content-Type': undefined}
@@ -201,6 +204,32 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
             // now post to /adminApi/updateImage
             console.log(response);
         });
+    };
+
+    /**
+     * Converts Base64 Data to a Blob
+     * @param dataURI
+     * @returns {*}
+     */
+    $scope.dataURItoBlob = function (dataURI) {
+
+        // convert base64/URLEncoded data component to raw binary data held in a string
+        var byteString;
+        if (dataURI.split(',')[0].indexOf('base64') >= 0)
+            byteString = atob(dataURI.split(',')[1]);
+        else
+            byteString = unescape(dataURI.split(',')[1]);
+
+        // separate out the mime component
+        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+        // write the bytes of the string to a typed array
+        var ia = new Uint8Array(byteString.length);
+        for (var i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+
+        return new Blob([ia], {type:mimeString});
     };
 
     /**

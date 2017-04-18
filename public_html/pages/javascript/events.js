@@ -79,7 +79,6 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
     $scope.state = {
         startCalOpen: false,
         endCalOpen: false,
-        hasImage: false,
     };
     $scope.dateOptions = {
         timezone: 'pst'
@@ -100,16 +99,18 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
         $scope.startDate = new Date(selectedEvent.unixStartTime * 1000);
         $scope.endDate = new Date(selectedEvent.unixEndTime * 1000);
         $scope.priorityCssClass = $scope.$parent.getPriorityClass(selectedEvent.priority);
-        $scope.state.hasImage = ($scope.event.detail.imageURL);
-        if ($scope.state.hasImage) {
-            $scope.uploadImage = $scope.event.detail.imageURL;
-        } else {
-            $scope.uploadImage = $scope.$parent.imagePlaceholder;
-        }
+
+        // Image Setup
         $scope.cropper = {
             primaryImage: null,
             croppedImage: null
         };
+        $scope.uploadImage = ($scope.event.detail.imageURL) ?
+            $scope.event.detail.imageURL :
+            $scope.$parent.imagePlaceholder;
+        $scope.thumbnail = ($scope.event.detail.thumbURL) ?
+            $scope.event.detail.thumbURL :
+            $scope.$parent.imagePlaceholder;
     });
 
     /**
@@ -139,14 +140,14 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
     $scope.onSave = function() {
         if (!$scope.eventEditForm.$valid
             || $scope.event.detail.activities.length == 0
-            || $scope.uploadImage == $scope.$parent.imagePlaceholder) {
+            || $scope.uploadImage == $scope.$parent.imagePlaceholder
+            || $scope.thumbnail == $scope.$parent.imagePlaceholder) {
             $('#incompleteEventModal').modal('show');
             return;
         }
         $('.nav-tabs a[href="#events-panel"]').tab('show');
 
         console.log('Saving Event');
-        console.log($scope.event);
         console.log($scope.uploadImage);
         $scope.event.readableStartTime =
             $filter('date')(new Date($scope.startDate), $scope.readableDateFormat);
@@ -156,10 +157,7 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
         if (detailId) {
             $http.post('/adminApi/updateEvent',
                 {'event': $scope.event});
-
-            if ($scope.uploadImage) {
-                $scope.$parent.uploadImageToServer(detailId, $scope.uploadImage);
-            }
+            $scope.uploadEventImages(detailId);
         } else {
             // Add a new event
             $http.post('/adminApi/addEvent',
@@ -170,11 +168,29 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
                     $scope.event.id = response.data.eventId;
 
                     $scope.$parent.getEvents();
-                    // Don't upload the image until we have a detailId
-                    if ($scope.uploadImage) {
-                        $scope.$parent.uploadImageToServer(detailId, $scope.uploadImage);
-                    }
+                    // Now that we have a detailID, we can upload
+                    $scope.uploadEventImages(detailId);
                 });
+        }
+    };
+
+    /**
+     * Uploads the Primary and Thumbnail Images
+     * @param detailId
+     */
+    $scope.uploadEventImages = function(detailId) {
+        if ($scope.uploadImage &&
+            $scope.uploadImage != $scope.event.detail.imageURL) {
+            $scope.$parent.uploadImagesToServer(
+                detailId, $scope.uploadImage, 'PrimaryImage');
+        }
+
+        if ($scope.thumbnail &&
+            $scope.thumbnail != $scope.event.detail.thumbURL) {
+            var blob = $scope.$parent.dataURItoBlob($scope.thumbnail);
+            var thumbnailFile = new File([blob], 'thumbnail.png', {type:"image/png"});
+            $scope.$parent.uploadImagesToServer(
+                detailId, thumbnailFile, 'Thumbnail');
         }
     };
 
@@ -188,8 +204,6 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
         if($scope.eventEditForm.imageInput.$error.maxWidth) {
             $scope.uploadImage = $scope.$parent.imagePlaceholder;
             $('#invalidImageModal').modal('show');
-        } else {
-            $scope.dest.detail.imageURL = $scope.uploadImage;
         }
     };
 

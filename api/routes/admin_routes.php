@@ -268,9 +268,12 @@ $app->post('/adminApi/updateImage', function ($request, $response, $args) {
 
     $files = $request->getUploadedFiles();
     $detailId = $request->getParsedBody()['detailId'];
+    $imageType = $request->getParsedBody()['imageType'];
 
-    if (empty($files['uploadImage']) || !$detailId) {
-        throw new Exception('Expected an uploaded image');
+    if (!$detailId
+        || empty($files['image'])
+        || ($imageType != 'PrimaryImage' && $imageType != 'Thumbnail')) {
+        throw new Exception('Incomplete Image Data');
     }
 
     // Validate the detailId
@@ -283,37 +286,41 @@ $app->post('/adminApi/updateImage', function ($request, $response, $args) {
         throw new Exception('Invalid Detail Id');
     }
 
-    $newfile = $files['uploadImage'];
-    // Move the new image
-    $pathParts = pathinfo($newfile->getClientFilename());
-    $newfileName = randomString(32) . "." . $pathParts['extension'];
-    $targetPath = __IMGDIR__  . $newfileName;
-    $newfile->moveTo($targetPath);
+    // Move the image
+    $imageFile = $files['image'];
+    $pathParts = pathinfo($imageFile->getClientFilename());
+    $newFileName = randomString(32) . "." . $pathParts['extension'];
+    $targetPath = __IMGDIR__  . $newFileName;
+    $imageFile->moveTo($targetPath);
 
     // Delete the old image
-    $query = 'SELECT `image_url` FROM `detail` WHERE `id`=:detailId';
+    $imageDBName = ($imageType == 'PrimaryImage') ? 'image_url' : 'thumb_url';
+    $query = "SELECT `$imageDBName` FROM `detail` WHERE `id`=:detailId";
     $stmt = $db->prepare($query);
     $stmt->bindParam(':detailId', $detailId, \PDO::PARAM_INT);
     $stmt->execute();
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    if ($row['image_url']) {
-        $delFileParts = pathinfo($row['image_url']);
+    if ($row[$imageDBName]) {
+        $delFileParts = pathinfo($row[$imageDBName]);
         $delFile = __IMGDIR__ . $delFileParts['basename'];
         unlink($delFile);
     }
 
     // Update detail row with the new detail image
-    $newURL =  'https://' . $_SERVER['SERVER_NAME'] . '/img/' . $newfileName;
-    $query = 'UPDATE `detail` SET `image_url`=:newURL WHERE `id`=:detailId';
+    $newImageURL =  'https://' . $_SERVER['SERVER_NAME'] . '/img/' . $newFileName;
+    $query = 'UPDATE `detail` '
+        . "SET `$imageDBName`=:newImageURL "
+        . 'WHERE `id`=:detailId';
     $stmt = $db->prepare($query);
     $stmt->bindParam(':detailId', $detailId, \PDO::PARAM_INT);
-    $stmt->bindParam(':newURL', $newURL, \PDO::PARAM_STR);
+    $stmt->bindParam(':newImageURL', $newImageURL, \PDO::PARAM_STR);
     $stmt->execute();
 
     return $response->withJson(
         array(
+            'query' => $query,
             'fileparts' => $delFileParts,
-            'delfile' => $delFile,
+            'newImageURL' => print_r($newFileName, true)
         ));
 });
 
