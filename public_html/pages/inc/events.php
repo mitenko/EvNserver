@@ -99,6 +99,7 @@
                         ngf-multiple="false" ngf-accept="'image/*'"
                         ngf-drop-available="dropSupported"
                         ngf-max-width="{{maxImageWidth}}"
+                        ngf-min-ratio="{{minRatio}}"
                         ngf-change="validateEventImage($files, $file);">
                             <img class="col-md-12 img-thumbnail" ngf-src="uploadImage"><br>
                         <a type="button"

@@ -33,7 +33,7 @@ require __PAGES__ . 'inc/HeaderRequirements.php';
                     Invalid Image Dimensions
                 </div>
                 <div class="modal-body">
-                    The max width for images is 1024 px. Please resize your image.
+                    The minimum ratio is 1:1 and the max width for images is 1024 px. Please resize your image.
                 </div>
                 <div class="modal-footer">
                     <a type="button" class="btn btn-primary" data-dismiss="modal">Okay</a>

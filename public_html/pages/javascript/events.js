@@ -156,8 +156,10 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
         // Update the event if we have a detailId
         if (detailId) {
             $http.post('/adminApi/updateEvent',
-                {'event': $scope.event});
-            $scope.uploadEventImages(detailId);
+                {'event': $scope.event})
+                .then(function(response) {
+                    $scope.uploadEventImages(detailId)
+                });
         } else {
             // Add a new event
             $http.post('/adminApi/addEvent',
@@ -167,9 +169,10 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
                     $scope.event.detail.id = detailId;
                     $scope.event.id = response.data.eventId;
 
-                    $scope.$parent.getEvents();
                     // Now that we have a detailID, we can upload
                     $scope.uploadEventImages(detailId);
+
+                    $scope.$parent.getEvents();
                 });
         }
     };
@@ -183,6 +186,7 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
             $scope.uploadImage != $scope.event.detail.imageURL) {
             $scope.$parent.uploadImagesToServer(
                 detailId, $scope.uploadImage, 'PrimaryImage');
+            $scope.event.detail.imageURL = $scope.uploadImage;
         }
 
         if ($scope.thumbnail &&
@@ -191,6 +195,7 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
             var thumbnailFile = new File([blob], 'thumbnail.png', {type:"image/png"});
             $scope.$parent.uploadImagesToServer(
                 detailId, thumbnailFile, 'Thumbnail');
+            $scope.event.detail.thumbURL = $scope.thumbnail;
         }
     };
 
@@ -204,6 +209,14 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
         if($scope.eventEditForm.imageInput.$error.maxWidth) {
             $scope.uploadImage = $scope.$parent.imagePlaceholder;
             $('#invalidImageModal').modal('show');
+        } else {
+            // Start parsing that cropper.primaryImage **now**
+            var reader = new FileReader();
+            reader.addEventListener("load", function () {
+                $scope.cropper.primaryImage = reader.result;
+            }, false);
+
+            reader.readAsDataURL($scope.uploadImage);
         }
     };
 
@@ -211,7 +224,10 @@ evnApp.controller('EditEvntCtrl', function EvntEvntCtrl(
      * Initialize the image crop
      */
     $scope.initImageCrop = function() {
-        $scope.cropper.primaryImage = $scope.uploadImage;
+        console.log($scope.uploadImage);
+        if (!($scope.uploadImage instanceof File)) {
+            $scope.cropper.primaryImage = $scope.uploadImage;
+        }
     };
 
     /**

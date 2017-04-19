@@ -72,6 +72,13 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
     /**
      * Initializations
      */
+    $scope.uploadImage = $scope.$parent.imagePlaceholder;
+    $scope.thumbnail = $scope.$parent.imagePlaceholder;
+    $scope.cropper = {
+        primaryImage: null,
+        croppedImage: null
+    };
+
     $scope.googleMapsUrl = "https://maps.google.com/maps/api/js?key=AIzaSyCDL0vv7gI6sH4Upl8xkrcow6jygDa0aK";
     $scope.defaultCenter = new google.maps.LatLng(
         49.201996, -123.958657);
@@ -91,6 +98,7 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
      * Called when the Destination is set
      */
     $scope.$on('destinationSelect', function(event, selectedDest) {
+        console.log(selectedDest);
         $scope.dest = selectedDest;
         $scope.backupDest = jQuery.extend(true, {}, selectedDest);
         $scope.state.hasImage = ($scope.dest.detail.imageURL);
@@ -99,6 +107,18 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
         } else {
             $scope.uploadImage = $scope.$parent.imagePlaceholder;
         }
+
+        // Image Setup
+        $scope.cropper = {
+            primaryImage: null,
+            croppedImage: null
+        };
+        $scope.uploadImage = ($scope.dest.detail.imageURL) ?
+            $scope.dest.detail.imageURL :
+            $scope.$parent.imagePlaceholder;
+        $scope.thumbnail = ($scope.dest.detail.thumbURL) ?
+            $scope.dest.detail.thumbURL :
+            $scope.$parent.imagePlaceholder;
 
         // Resize map
         // See https://github.com/allenhwkim/angularjs-google-maps/issues/471
@@ -169,11 +189,9 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
         // Update the event if we have a detailId
         if (detailId) {
             $http.post('/adminApi/updateDest',
-                {'dest': $scope.dest}).then(function(response) {console.log(response);});
-
-            if ($scope.uploadImage) {
-                $scope.$parent.uploadImageToServer(detailId, $scope.uploadImage);
-            }
+                {'dest': $scope.dest});
+            $scope.uploadDestImages(detailId);
+            $scope.$parent.getDestinations('name', 'ASC');
         } else {
             // Add a new event
             $http.post('/adminApi/addDest',
@@ -184,13 +202,31 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
                     $scope.dest.address.id = response.data.addressId;
                     $scope.dest.id = response.data.destId;
 
-                    // Don't upload the image until we have a detailId
-                    if ($scope.uploadImage) {
-                        $scope.$parent.uploadImageToServer(detailId, $scope.uploadImage);
-                    }
-
+                    $scope.uploadDestImages(detailId);
                     $scope.$parent.getDestinations('name', 'ASC');
                 });
+        }
+    };
+
+    /**
+     * Uploads the Primary and Thumbnail Images
+     * @param detailId
+     */
+    $scope.uploadDestImages = function(detailId) {
+        if ($scope.uploadImage &&
+            $scope.uploadImage != $scope.dest.detail.imageURL) {
+            $scope.$parent.uploadImagesToServer(
+                detailId, $scope.uploadImage, 'PrimaryImage');
+            $scope.event.detail.imageURL = $scope.uploadImage;
+        }
+
+        if ($scope.thumbnail &&
+            $scope.thumbnail != $scope.dest.detail.thumbURL) {
+            var blob = $scope.$parent.dataURItoBlob($scope.thumbnail);
+            var thumbnailFile = new File([blob], 'thumbnail.png', {type:"image/png"});
+            $scope.$parent.uploadImagesToServer(
+                detailId, thumbnailFile, 'Thumbnail');
+            $scope.event.detail.thumbURL = $scope.thumbnail;
         }
     };
 
@@ -205,8 +241,31 @@ evnApp.controller('EditDestCtrl', function EditDestCtrl(
             $scope.uploadImage = $scope.$parent.imagePlaceholder;
             $('#invalidImageModal').modal('show');
         } else {
-            $scope.dest.detail.imageURL = $scope.uploadImage;
+            // Start parsing that cropper.primaryImage **now**
+            var reader = new FileReader();
+            reader.addEventListener("load", function () {
+                $scope.cropper.primaryImage = reader.result;
+            }, false);
+
+            reader.readAsDataURL($scope.uploadImage);
         }
+    };
+
+    /**
+     * Initialize the image crop
+     */
+    $scope.initDestImageCrop = function() {
+        console.log($scope.uploadImage);
+        if (!($scope.uploadImage instanceof File)) {
+            $scope.cropper.primaryImage = $scope.uploadImage;
+        }
+    };
+
+    /**
+     * Initialize the image crop
+     */
+    $scope.onSaveDestImageCrop = function() {
+        $scope.thumbnail = $scope.cropper.croppedImage;
     };
 
     /**

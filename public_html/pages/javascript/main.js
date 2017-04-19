@@ -43,6 +43,7 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
     costData[4] = {value: 3, text: '$$$$'};
     $scope.costData = costData;
 
+    $scope.minRatio = "1:1";
     $scope.maxImageWidth = 1024;
     $scope.imagePlaceholder = 'https://eventsnanaimo.com/img/placeholder.png';
 
