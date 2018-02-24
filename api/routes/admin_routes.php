@@ -11,7 +11,7 @@ $app->get('/adminApi/getEvents', function ($request, $response, $args) {
 
     $query = "SELECT "
         . '`d`.id as `detailId`, `d`.name as `name`, `d`.short_desc as `short_desc`, `d`.long_desc as `long_desc`, '
-        . '`d`.thumb_url as `thumb_url`, `d`.image_url as `image_url`, `d`.phone as `phone`, '
+        . '`d`.thumb_url as `thumb_url`, `d`.image_url as `image_url`, `d`.phone as `phone`, `d`.email as `email`, '
         . "`e`.`id` as `event_id`, `e`.start_time as `start_time`, `e`.end_time as `end_time`, "
         . "UNIX_TIMESTAMP(`e`.date_added) as `date_added`, `e`.priority as `priority`, "
         . "`d`.`phone` as `phone`, `d`.website as `website`, `d`.cost as `cost` "

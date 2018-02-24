@@ -51,6 +51,11 @@ class Detail {
     public $cost;
 
     /**
+     * The contact email
+     */
+    public $email;
+
+    /**
      * Array of activity data types
      */
     public $activities;
@@ -68,6 +73,7 @@ class Detail {
         $this->phone = $row['phone'];
         $this->website = $row['website'];
         $this->cost = intval($row['cost']);
+        $this->email = $row['email'];
 	}
 }
 ?>

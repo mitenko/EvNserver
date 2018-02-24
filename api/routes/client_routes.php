@@ -10,10 +10,10 @@ $app->get('/api/getEvents', function ($request, $response, $args) {
 
     $query = "SELECT "
         . '`d`.id as `detailId`, `d`.name, `d`.short_desc, `d`.long_desc, `d`.thumb_url, '
-        . '`d`.image_url, `d`.phone, `d`.website, `d`.cost, '
+        . '`d`.image_url, `d`.phone, `d`.website, `d`.cost, `d`.email, '
         . "`e`.`id` as event_id, `e`.start_time as start_time, `e`.end_time as end_time, "
         . "UNIX_TIMESTAMP(`e`.date_added) as date_added, `e`.priority, "
-        . "`d`.`phone` as `phone`, `d`.website as `website`, `d`.cost as `cost` "
+        . "`d`.`phone` as `phone`, `d`.website as `website`, `d`.cost as `cost`, `d`.email as `email` "
         . "FROM event as `e` LEFT JOIN detail as `d` ON `e`.detail_id=`d`.`id` ";
 
     /** extra joins if we're limiting categories **/
@@ -92,7 +92,8 @@ $app->get('/api/getDestinations', function ($request, $response, $args) {
         !empty($params['northeast_longitude']) && !empty($params['northeast_latitude'])) {
 
         $query = "SELECT "
-            . '`d`.id as `detailId`, `d`.name, `d`.short_desc, `d`.long_desc, `d`.thumb_url, `d`.image_url, `d`.phone, '
+            . '`d`.id as `detailId`, `d`.name, `d`.short_desc, `d`.long_desc, `d`.thumb_url, '
+            . '`d`.image_url, `d`.phone, `d`.website, `d`.cost, `d`.email, '
             . '`dest`.id as `destId`, `dest`.`latitude`, `dest`.`longitude`, '
             . '`a`.`id` as `address_id`, `a`.`address_line_one`, `a`.`address_line_two`, `a`.`postal_code`,`a`.`city` '
             . 'FROM destination as `dest` '

@@ -25,6 +25,16 @@ class Destination {
 	 */
 	public $address;
 
+    /**
+     * The detail
+     */
+    public $detail;
+
+    /**
+     * The display icon name
+     */
+    public $displayIcon;
+
 	/**
 	 * Will bind the given DB row
 	 */
@@ -33,6 +43,9 @@ class Destination {
         $this->id = intval($row['destId']);
         $this->longitude = floatval($row['longitude']);
         $this->latitude = floatval($row['latitude']);
+        if (!empty($detail->activities)) {
+            $this->displayIcon=$detail->activities[0]->category;
+        }
 
         // And the address
         $address = new \Evn\model\Address();

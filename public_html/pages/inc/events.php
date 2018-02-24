@@ -2,6 +2,7 @@
 <div id="events-panel" class="tab-pane fade in active" ng-controller="EvntTblCtrl">
     <div class="panel panel-default">
         <table class="table table-bordered">
+            <tbody>
             <tr>
                 <th>Priority <i class="btn pull-right glyphicon glyphicon-sort"
                                 ng-click="sortEventTable('priority');"></i></th>
@@ -40,6 +41,28 @@
                             </span>
                 </td>
             </tr>
+            </tbody>
+
+            <tfoot>
+            <td colspan="6">
+                <div class="pagination pull-right">
+                    <ul>
+                        <li ng-class="{disabled: currentPage == 0}">
+                            <a href ng-click="prevPage()">« Prev</a>
+                        </li>
+                        <li ng-repeat="n in range(pagedItems.length)"
+                            ng-class="{active: n == currentPage}"
+                            ng-click="setPage()">
+                            <a href ng-bind="n + 1">1</a>
+                        </li>
+                        <li ng-class="{disabled: currentPage == pagedItems.length - 1}">
+                            <a href ng-click="nextPage()">Next »</a>
+                        </li>
+                    </ul>
+                </div>
+            </td>
+            </tfoot>
+
         </table>
 
         <!-- Confirm Delete Modal -->
@@ -184,9 +207,15 @@
                         </span>
             </div>
 
-            <!-- Cost -->
+            <!-- Email and Cost -->
             <div class="row">
-                <div class="form-group col-md-4 col-md-offset-4">
+                <div class="form-group col-md-8">
+                    <label for="email">Email</label>
+                    <input type="text" class="form-control"
+                           id="email" ng-model='event.detail.email' placeholder="Contact Email">
+                </div>
+
+                <div class="form-group col-md-4">
                     <div class="dropdown">
                         <label for="cost">Cost</label>
                         <select class="form-control money" id="cost"

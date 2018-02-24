@@ -2,7 +2,7 @@
  * Created by David on 2017-03-25.
  */
 var evnApp = angular.module('evnApp',
-    ['ngResource', 'ngMap', 'ngFileUpload', 'ngImgCrop']);
+    ['ngResource', 'ngMap', 'ngFileUpload', 'ngImgCrop', 'ui.bootstrap']);
 
 /**
  * Custom Filter
@@ -65,6 +65,7 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
             phone: '',
             website: '',
             cost: 0,
+            email: '',
             activities: [],
         };
         return emptyDetail;
@@ -271,7 +272,6 @@ evnApp.controller('RootCtrl', function RootCtrl($scope, $http) {
         $http.get('/adminApi/getDestinations',
             {params: {'sorton': sorton, 'sortdir': sortdir}})
             .then(function (response) {
-                console.log(response);
                 $scope.destinations = response.data.data;
             });
     };
