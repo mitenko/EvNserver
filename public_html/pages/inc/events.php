@@ -2,6 +2,7 @@
 <div id="events-panel" class="tab-pane fade in active" ng-controller="EvntTblCtrl">
     <div class="panel panel-default">
         <table class="table table-bordered">
+
             <tbody>
             <tr>
                 <th>Priority <i class="btn pull-right glyphicon glyphicon-sort"
@@ -42,26 +43,6 @@
                 </td>
             </tr>
             </tbody>
-
-            <tfoot>
-            <td colspan="6">
-                <div class="pagination pull-right">
-                    <ul>
-                        <li ng-class="{disabled: currentPage == 0}">
-                            <a href ng-click="prevPage()">« Prev</a>
-                        </li>
-                        <li ng-repeat="n in range(pagedItems.length)"
-                            ng-class="{active: n == currentPage}"
-                            ng-click="setPage()">
-                            <a href ng-bind="n + 1">1</a>
-                        </li>
-                        <li ng-class="{disabled: currentPage == pagedItems.length - 1}">
-                            <a href ng-click="nextPage()">Next »</a>
-                        </li>
-                    </ul>
-                </div>
-            </td>
-            </tfoot>
 
         </table>
 

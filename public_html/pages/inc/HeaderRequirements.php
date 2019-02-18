@@ -28,6 +28,9 @@
 <script src="https://maps.google.com/maps/api/js?key=AIzaSyCDL0vv7gI6sH4Upl8xkrcow6jygDa0aKY"></script>
 <script src="/javascript/ng-map.min.js"></script>
 
+<!-- Pagination -->
+<script src="/javascript/dirPagination.js"></script>
+
 
 <script src="/javascript/main.js"></script>
 <script src="/javascript/events.js"></script>

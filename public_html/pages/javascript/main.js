@@ -2,7 +2,7 @@
  * Created by David on 2017-03-25.
  */
 var evnApp = angular.module('evnApp',
-    ['ngResource', 'ngMap', 'ngFileUpload', 'ngImgCrop', 'ui.bootstrap']);
+    ['ngResource', 'ngMap', 'ngFileUpload', 'ngImgCrop', 'ui.bootstrap', 'angularUtils.directives.dirPagination']);
 
 /**
  * Custom Filter

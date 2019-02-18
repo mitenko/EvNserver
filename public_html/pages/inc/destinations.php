@@ -2,6 +2,18 @@
 <div id="destination-panel" class="tab-pane fade" ng-controller="DestTblCtrl">
     <div class="panel panel-default">
         <table class="table table-bordered">
+            <tfoot>
+            <tr><td colspan="10">
+                    <dir-pagination-controls
+                            class="pull-right">
+                        max-size="10"
+                        direction-links="true"
+                        boundary-links="true" >
+                    </dir-pagination-controls>
+                </td></tr>
+            </tfoot>
+
+            <tbody>
             <tr>
                 <th>Name <i class="btn pull-right glyphicon glyphicon-sort-by-alphabet"
                             ng-click="sortDestTable('name');"></i></th>
@@ -15,7 +27,7 @@
                         <span class="glyphicon glyphicon-plus"></span> Add Destination</a></th>
             </tr>
 
-            <tr ng-repeat="destination in destinations">
+            <tr dir-paginate="destination in destinations|itemsPerPage:8">
                 <td>{{destination.detail.name}}</td>
                 <td class='hideOverflow'>
                     {{destination.detail.shortDesc | limitTo : 60}}{{destination.detail.shortDesc.length > 60 ? '...' : ''}}
@@ -35,6 +47,7 @@
                             </span>
                 </td>
             </tr>
+            </tbody>
         </table>
 
         <!-- Confirm Delete Modal -->
