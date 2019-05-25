@@ -50,8 +50,8 @@ class DBUtil {
      */
     public static function addDetail($db, $detail) {
         $query = 'INSERT INTO `detail` '
-            . '(`name`,`short_desc`,`long_desc`, `image_url`, `phone`, `website`,`cost`, `email`) '
-            . 'VALUES (:name, :shortDesc, :longDesc, :imageURL, :phone, :website, :cost, :email)';
+            . '(`name`,`short_desc`,`long_desc`, `image_url`, `thumb_url`, `phone`, `website`,`cost`, `email`) '
+            . 'VALUES (:name, :shortDesc, :longDesc, :imageURL, :thumbURL, :phone, :website, :cost, :email)';
         $stmt = $db->prepare($query);
 
         // Bind the Parameters
@@ -59,6 +59,7 @@ class DBUtil {
         $stmt->bindParam(':shortDesc', $detail['shortDesc'], \PDO::PARAM_STR);
         $stmt->bindParam(':longDesc', $detail['longDesc'], \PDO::PARAM_STR);
         $stmt->bindParam(':imageURL', $detail['imageURL'], \PDO::PARAM_STR);
+        $stmt->bindParam(':thumbURL', $detail['thumbURL'], \PDO::PARAM_STR);
         $stmt->bindParam(':phone', $detail['phone'], \PDO::PARAM_STR);
         $stmt->bindParam(':website', $detail['website'], \PDO::PARAM_STR);
         $stmt->bindParam(':cost', $detail['cost'], \PDO::PARAM_INT);

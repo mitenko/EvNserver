@@ -29,8 +29,10 @@ class Database {
 	 * Constructor
 	 */
 	function __construct() {
-		$this->DBH = new \PDO("mysql:host=localhost;dbname=".self::databaseName, 
+		$this->DBH = new \PDO("mysql:host=localhost;dbname=".self::databaseName,
 				self::userName, self::userPassword);
+        //$this->DBH->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );
+        //$this->DBH->setAttribute( \PDO::ATTR_EMULATE_PREPARES, FALSE );
 		$stmt = $this->DBH->prepare('SET NAMES utf8');
 		$stmt->execute();		
 	}
